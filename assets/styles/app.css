@@ -1,0 +1,4 @@
+.pokemonGrid {
+    display: flex;
+    flex-wrap: wrap;
+}

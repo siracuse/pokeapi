@@ -12,13 +12,10 @@ final class MainController extends AbstractController
 {
     #[Route('/', name: 'index')]
     public function index(Pokeapi $pokeapi) {
-        
-        $content = $pokeapi->pokemonGetSingle(1);
-        dd($content);
-        
-        
+        $pokemons = $pokeapi->pokemonGetAllv2(9);
+      
         return $this->render('main/index.html.twig', [
-            'content' => $content
+            'pokemons' => $pokemons
         ]);
     }
 }
