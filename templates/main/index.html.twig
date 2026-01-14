@@ -6,16 +6,17 @@
 {% block body %}
 	<div class="pokemonGrid">
 		{% for pokemon in pokemons%}
-			<div class='pokemon'>
-				{# <div>{{pokemon['id']}}</div> #}
-				<div><img src="{{pokemon['sprite']}}" alt="" width='200px'></div>
+			<div>
+				<a class='pokemon' href="{{ path('pokemon', {name: pokemon.name}) }}">
+					<div><img src="{{pokemon.sprite}}" alt="" width='200px'></div>
 
-				<div>{{pokemon['name']}}</div>
-				<div>
-					{% for type in pokemon['types'] %}
-						<div>{{ type }}</div>
-					{% endfor %}
-				</div>
+					<div>{{pokemon.name}}</div>
+					<div>
+						{% for type in pokemon.types %}
+							<div>{{ type }}</div>
+						{% endfor %}
+					</div>
+				</a>
 			</div>
 		{% endfor %}
 	</div>

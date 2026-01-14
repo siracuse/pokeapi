@@ -14,21 +14,31 @@ class Pokeapi
         $this->client = $client;
     }
 
-    // public function pokemonGetSingle(int $id) : array {
+    public function pokemonGetSingle($name): array
+    {
 
-    //     $response = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon/'.$id);
+        $response = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon/' . $name);
 
-    //     $data = $response->toArray();
+        $data = $response->toArray();
 
-    //     $content = [
-    //         'id' => $data['id'], 
-    //         'sprite' => $data['sprites']['other']['official-artwork']['front_default'],
-    //         'name' => $data['name'],
-    //         'types' => array_map(fn($type) => $type['type']['name'], $data['types'])
-    //     ];
+        $content = [
+            'id' => $data['id'],
+            'sprite' => $data['sprites']['other']['official-artwork']['front_default'],
+            'name' => $data['name'],
+            'height' => $data['height'] * 0.1,
+            'weight' => $data['weight'] *0.1,
+            'types' => array_map(fn($type) => $type['type']['name'], $data['types']),
+            'stats'  => array_map(
+                fn($stat) => [
+                    'name' => $stat['stat']['name'],
+                    'base_stat' => $stat['base_stat'],
+                ],
+                $data['stats']
+            ),
+        ];
 
-    //     return $content;
-    // }
+        return $content;
+    }
 
     public function pokemonGetAll(int $limit): array
     {
@@ -60,7 +70,7 @@ class Pokeapi
 
         $responses = [];
         foreach ($pokemonList as $pokemon) {
-            $responses[] = $this->client->request('GET','https://pokeapi.co/api/v2/pokemon/' . $pokemon['name']);
+            $responses[] = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon/' . $pokemon['name']);
         }
 
         $contents = [];

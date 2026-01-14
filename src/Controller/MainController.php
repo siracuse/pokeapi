@@ -4,8 +4,6 @@ namespace App\Controller;
 
 use App\Service\Pokeapi;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpClient\HttpClient;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class MainController extends AbstractController
@@ -16,6 +14,15 @@ final class MainController extends AbstractController
       
         return $this->render('main/index.html.twig', [
             'pokemons' => $pokemons
+        ]);
+    }
+
+    #[Route('/pokemon/{name}', name: 'pokemon')]
+    public function pokemon(Pokeapi $pokeapi, $name) {
+        $pokemon = $pokeapi->pokemonGetSingle($name);
+      
+        return $this->render('main/pokemon.html.twig', [
+            'pokemon' => $pokemon
         ]);
     }
 }

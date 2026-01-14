@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block body %}
+
+	<div class="pokemonDetail">
+		<h1>{{pokemon.name}}</h1>
+		<div><img src="{{pokemon.sprite}}" alt="" width='200px'></div>
+
+		<div class="infos">
+			<div>{{pokemon.height}} m</div>
+			<div>{{pokemon.weight}} kg</div>
+		</div>
+
+		<div class="stats">
+			{% for stat in pokemon.stats %}
+				<div>
+					<span>{{stat.name}}</span>
+					<span>{{stat.base_stat}}</span>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+
+{% endblock %}

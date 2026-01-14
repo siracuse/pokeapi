@@ -1,4 +1,119 @@
+/* Reset minimal */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Base */
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f5f6fa;
+    color: #2f3640;
+    padding: 20px;
+}
+
+/* Liens */
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* --------------------
+   PAGE ACCUEIL
+-------------------- */
+
 .pokemonGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.pokemon {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 15px;
+    display: block;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pokemon:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.pokemon img {
+    max-width: 100%;
+}
+
+.pokemon div:first-of-type {
+    margin-bottom: 10px;
+}
+
+.pokemon > div:nth-child(2) {
+    font-weight: bold;
+    font-size: 18px;
+    text-transform: capitalize;
+    margin-bottom: 8px;
+}
+
+/* Types */
+.pokemon > div:nth-child(3) {
     display: flex;
-    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+}
+
+.pokemon > div:nth-child(3) div {
+    background-color: #dcdde1;
+    border-radius: 12px;
+    padding: 4px 10px;
+    font-size: 12px;
+    text-transform: capitalize;
+}
+
+/* --------------------
+   FICHE POKÉMON
+-------------------- */
+
+.pokemonDetail {
+    max-width: 500px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    border-radius: 16px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+.pokemonDetail h1 {
+    text-transform: capitalize;
+    margin-bottom: 15px;
+}
+
+.pokemonDetail img {
+    margin: 15px 0;
+}
+
+.pokemonDetail .infos {
+    display: flex;
+    justify-content: space-around;
+    margin: 15px 0;
+    font-weight: bold;
+}
+
+/* Stats */
+.stats {
+    margin-top: 20px;
+    text-align: left;
+}
+
+.stats div {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px solid #eee;
+    text-transform: capitalize;
 }
