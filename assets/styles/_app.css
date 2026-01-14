@@ -24,8 +24,8 @@ a {
 -------------------- */
 
 .pokemonGrid {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 20px;
 }
 
@@ -56,39 +56,20 @@ a {
     margin-bottom: 8px;
 }
 
+/* Types */
 .pokemon > div:nth-child(3) {
     display: flex;
     justify-content: center;
     gap: 6px;
 }
 
-.type {
-    color: white;
-    font-weight: bold;
+.pokemon > div:nth-child(3) div {
+    background-color: #dcdde1;
     border-radius: 12px;
     padding: 4px 10px;
-    font-size: 14px;
+    font-size: 12px;
     text-transform: capitalize;
 }
-/* Types principaux */
-.fire { background-color: #ff3b30; }
-.water { background-color: #007aff; }
-.grass { background-color: #00c853; }
-.electric { background-color: #ffd60a; color: #2f3640; }
-.ice { background-color: #5ac8fa; }
-.fighting { background-color: #ff453a; }
-.poison { background-color: #af52de; }
-.ground { background-color: #ff9f0a; color: #2f3640; }
-.flying { background-color: #64d2ff; color: #2f3640; }
-.psychic { background-color: #ff2d55; }
-.bug { background-color: #34c759; color: #2f3640; }
-.rock { background-color: #bf8f00; }
-.ghost { background-color: #5e5ce6; }
-.dark { background-color: #1c1c1e; }
-.dragon { background-color: #0a84ff; }
-.steel { background-color: #8e8e93; color: #2f3640; }
-.fairy { background-color: #ff9ff3; color: #2f3640; }
-.normal { background-color: #c7c7cc; color: #2f3640; }
 
 /* --------------------
    FICHE POKÉMON
@@ -123,6 +104,7 @@ a {
 /* Stats */
 .stats {
     margin-top: 20px;
+    text-align: left;
 }
 
 .stats div {
