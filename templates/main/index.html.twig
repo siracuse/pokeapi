@@ -4,6 +4,19 @@
 {% endblock %}
 
 {% block body %}
+	<div class="pokemonSearch">
+		{{form(form)}}
+	</div>
+
+		{# <div class="pokemonSearch">
+		{{form_start(form)}}
+			<div class="">		
+				{{form_row(form.search)}}
+				{{form_row(form.submit)}}
+			</div>
+		{{form_end(form)}}
+	</div> #}
+	
 	<div class="pokemonGrid">
 		{% for pokemon in pokemons%}
 			<div>
