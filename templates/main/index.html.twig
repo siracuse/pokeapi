@@ -8,15 +8,6 @@
 		{{form(form)}}
 	</div>
 
-		{# <div class="pokemonSearch">
-		{{form_start(form)}}
-			<div class="">		
-				{{form_row(form.search)}}
-				{{form_row(form.submit)}}
-			</div>
-		{{form_end(form)}}
-	</div> #}
-	
 	<div class="pokemonGrid">
 		{% for pokemon in pokemons%}
 			<div>
@@ -33,4 +24,10 @@
 			</div>
 		{% endfor %}
 	</div>
+
+	<div class="mg-y-20 text-center">
+		<a href="{{ path('index', {limit: limit + 10}) }}" class="btn-primary">Charger d'autres Pokémon</a>
+	</div>
+
+	<footer></footer>
 {% endblock %}

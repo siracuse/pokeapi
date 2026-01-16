@@ -63,9 +63,9 @@ class Pokeapi
 
     // Optimisation de perf sur l'asynchrone avec HttpClient symfony
     // A creuser/comprendre avant de l'utiliser
-    public function pokemonGetAllv2(int $limit): array
+    public function pokemonGetAllv2(int $limit = 0): array
     {
-        $response = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon?limit=' . $limit);
+        $response = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon?limit='. $limit);
         $pokemonList = $response->toArray()['results'];
 
         $responses = [];
