@@ -9,8 +9,10 @@
 		<div><img src="{{pokemon.sprite}}" alt="" width='200px'></div>
 
 		<div class="infos">
-			<div>{{pokemon.height}} m</div>
-			<div>{{pokemon.weight}} kg</div>
+			<div>{{pokemon.height}}
+				m</div>
+			<div>{{pokemon.weight}}
+				kg</div>
 		</div>
 
 		<div class="stats">
@@ -21,6 +23,10 @@
 				</div>
 			{% endfor %}
 		</div>
+	</div>
+
+	<div class="mt-40 text-center">
+		<a href="{{ path('index') }}" onclick="window.history.back(); return false;" class="btn-primary">Retour</a>
 	</div>
 
 {% endblock %}

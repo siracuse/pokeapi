@@ -22,9 +22,8 @@ class Pokeapi
         return $this->cache->get('pokemon_' . strtolower($name), function($item) use ($name){
             $item->expiresAfter(3600);
             $response = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon/' . $name);
-
+            
             $data = $response->toArray();
-
             $content = [
                 'id' => $data['id'],
                 'sprite' => $data['sprites']['other']['official-artwork']['front_default'],
@@ -40,7 +39,6 @@ class Pokeapi
                     $data['stats']
                 ),
             ];
-
             return $content;
         });
 
@@ -74,7 +72,7 @@ class Pokeapi
     public function pokemonGetAllv2(int $limit = 0): array
     {
         return $this->cache->get('pokemon_list_' . $limit, function($item) use ($limit) {
-            $item->expiresAfter(900);
+            $item->expiresAfter(3600);
             $response = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon?limit=' . $limit);
             $pokemonList = $response->toArray()['results'];
 
