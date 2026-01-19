@@ -12,8 +12,17 @@ final class MainController extends AbstractController
 {
     #[Route('/', name: 'index')]
     public function index(Pokeapi $pokeapi, Request $request) {
+        
         $limit = $request->query->getInt('limit', 10);
+        $nextLimit = $limit + 10;
         $pokemons = $pokeapi->pokemonGetAllv2($limit);
+        
+        if(isset($pokemons['error'])) {
+            return $this->render('error.html.twig', [
+                'message' => $pokemons['message']
+            ]);
+        }
+
         $form = $this->createForm(PokemonSearchType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -24,16 +33,23 @@ final class MainController extends AbstractController
         return $this->render('main/index.html.twig', [
             'pokemons' => $pokemons,
             'form' => $form,
-            'limit' => $limit
+            'limit' => $limit,
+            'nextLimit' => $nextLimit
         ]);
     }
 
 
 
     #[Route('/pokemon/{name}', name: 'pokemon')]
-    public function pokemon(Pokeapi $pokeapi, $name) {
+    public function pokemon(Pokeapi $pokeapi, string $name) {
+        
         $pokemon = $pokeapi->pokemonGetSingle($name);
-      
+        
+        if(isset($pokemon['error'])) {
+            return $this->render('error.html.twig', [
+                'message' => $pokemon['message']
+            ]);
+        }
         return $this->render('main/pokemon.html.twig', [
             'pokemon' => $pokemon
         ]);
