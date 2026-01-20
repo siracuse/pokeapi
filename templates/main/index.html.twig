@@ -11,7 +11,7 @@
 	<div class="pokemonGrid">
 		{% for pokemon in pokemons%}
 			<div>
-				<a class='pokemon' href="{{ path('pokemon', {name: pokemon.name}) }}">
+				<a class='pokemon' href="{{ path('pokemon', {name: pokemon.nameEn}) }}">
 					<div><img src="{{pokemon.sprite}}" alt="" width='200px'></div>
 
 					<div>{{pokemon.name}}</div>

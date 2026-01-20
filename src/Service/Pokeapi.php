@@ -17,6 +17,15 @@ class Pokeapi
         $this->cache = $cache;
     }
 
+    private function getTranslateName(array $names, string $locale) {
+        foreach ($names as $entry) {
+            if ($entry['language']['name'] === $locale) {
+                return $entry['name'];
+            }
+        }
+        return null;
+    }
+
     public function pokemonGetSingle(string $name): array
     {
         return $this->cache->get('pokemon_' . strtolower($name), function($item) use ($name){
@@ -28,16 +37,10 @@ class Pokeapi
                 $pokemon = $pokemonResponse->toArray();
                 $pokemonSpecies = $pokemonSpeciesResponse->toArray();
                 
-                $nameFr = null;
-                foreach($pokemonSpecies['names'] as $entry) {
-                    if($entry['language']['name'] === 'fr') {
-                        $nameFr = $entry['name'];
-                        break;
-                    }
-                }
+                $nameFr = $this->getTranslateName($pokemonSpecies['names'], 'fr');
 
                 $content = [
-                    'id' => $pokemon['id'],
+                    // 'id' => $pokemon['id'],
                     'sprite' => $pokemon['sprites']['other']['official-artwork']['front_default'],
                     'name' => $nameFr ?? $pokemon['name'],
                     'height' => $pokemon['height'] * 0.1,
@@ -59,30 +62,36 @@ class Pokeapi
         });
     }
 
-    // Optimisation de perf avec l'asynchrone HttpClient symfony
-    // A creuser/comprendre + mise en place du cache
     public function pokemonGetAllv2(int $limit): array
     {
         return $this->cache->get('pokemon_list_' . $limit, function($item) use ($limit) {
             try {
                 $item->expiresAfter(3600);
-                $response = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon?limit=' . $limit);
-                $pokemonList = $response->toArray()['results'];
+                
+                $pokemonListResponse = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon?limit=' . $limit);
+                $pokemonList = $pokemonListResponse->toArray();
 
-                $responses = [];
-                foreach ($pokemonList as $pokemon) {
-                    $responses[] = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon/' . $pokemon['name']);
-                }
+                $pokemonResponses = [];
+                $pokemonSpeciesResponses = [];
+                
+                foreach ($pokemonList['results'] as $pokemon) {
+                    $pokemonResponses[] = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon/' . $pokemon['name']);
+                    $pokemonSpeciesResponses[] = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon-species/' . $pokemon['name']);
+                }   
 
                 $contents = [];
-                foreach ($responses as $response) {
-                    $data = $response->toArray();
-
+                foreach ($pokemonResponses as $index => $pokemonResponse) {
+                    $pokemon = $pokemonResponse->toArray();
+                    $pokemonSpecies = $pokemonSpeciesResponses[$index]->toArray();
+                    
+                    $nameFr = $this->getTranslateName($pokemonSpecies['names'], 'fr');
+  
                     $contents[] = [
                         // 'id'     => $data['id'],
-                        'sprite' => $data['sprites']['other']['official-artwork']['front_default'],
-                        'name'   => $data['name'],
-                        'types'  => array_map(fn($type) => $type['type']['name'], $data['types']),
+                        'sprite' => $pokemon['sprites']['other']['official-artwork']['front_default'],
+                        'name'   => $nameFr ?? $pokemon['name'],
+                        'nameEn'   => $pokemon['name'],
+                        'types'  => array_map(fn($type) => $type['type']['name'], $pokemon['types']),
                     ];
                 }
                 return $contents;
@@ -92,25 +101,4 @@ class Pokeapi
             }
         });
     }
-   
-    // public function pokemonGetAll(int $limit): array
-    // {
-    //     $response = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon?limit=' . $limit);
-    //     $pokemonList = $response->toArray()['results'];
-    //     $contents = [];
-
-    //     foreach ($pokemonList as $pokemon) {
-
-    //         $response = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon/' . $pokemon['name']);
-    //         $data = $response->toArray();
-
-    //         $contents[] = [
-    //             // 'id' => $data['id'],
-    //             'sprite' => $data['sprites']['other']['official-artwork']['front_default'],
-    //             'name' => $data['name'],
-    //             'types' => array_map(fn($type) => $type['type']['name'], $data['types'])
-    //         ];
-    //     }
-    //     return $contents;
-    // }
 }
