@@ -22,22 +22,33 @@ class Pokeapi
         return $this->cache->get('pokemon_' . strtolower($name), function($item) use ($name){
             try {
                 $item->expiresAfter(3600);
-                $response = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon/' . strtolower($name));
+                $pokemonResponse = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon/' . strtolower($name));
+                $pokemonSpeciesResponse = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon-species/' . strtolower($name));
+
+                $pokemon = $pokemonResponse->toArray();
+                $pokemonSpecies = $pokemonSpeciesResponse->toArray();
                 
-                $data = $response->toArray();
+                $nameFr = null;
+                foreach($pokemonSpecies['names'] as $entry) {
+                    if($entry['language']['name'] === 'fr') {
+                        $nameFr = $entry['name'];
+                        break;
+                    }
+                }
+
                 $content = [
-                    'id' => $data['id'],
-                    'sprite' => $data['sprites']['other']['official-artwork']['front_default'],
-                    'name' => $data['name'],
-                    'height' => $data['height'] * 0.1,
-                    'weight' => $data['weight'] * 0.1,
-                    'types' => array_map(fn($type) => $type['type']['name'], $data['types']),
+                    'id' => $pokemon['id'],
+                    'sprite' => $pokemon['sprites']['other']['official-artwork']['front_default'],
+                    'name' => $nameFr ?? $pokemon['name'],
+                    'height' => $pokemon['height'] * 0.1,
+                    'weight' => $pokemon['weight'] * 0.1,
+                    'types' => array_map(fn($type) => $type['type']['name'], $pokemon['types']),
                     'stats'  => array_map(
                         fn($stat) => [
                             'name' => $stat['stat']['name'],
                             'base_stat' => $stat['base_stat'],
                         ],
-                        $data['stats']
+                        $pokemon['stats']
                     ),
                 ];
                 return $content;
