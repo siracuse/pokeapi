@@ -1,0 +1,6 @@
+hp: 'Pv'
+attack: 'Attaque'
+defense: 'Défense'
+special-attack: 'Attaque spéciale'
+special-defense: 'Défense spéciale'
+speed: 'Vitesse'

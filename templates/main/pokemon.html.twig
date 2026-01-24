@@ -18,8 +18,8 @@
 		<div class="stats">
 			{% for stat in pokemon.stats %}
 				<div>
-					<span>{{stat.name}}</span>
-					<span>{{stat.base_stat}}</span>
+					<span>{{ stat.name|trans({}, 'stats') }}</span>
+					<span>{{ stat.base_stat }}</span>
 				</div>
 			{% endfor %}
 		</div>
