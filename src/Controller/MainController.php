@@ -15,7 +15,7 @@ final class MainController extends AbstractController
         
         $limit = $request->query->getInt('limit', 10);
         $nextLimit = $limit + 10;
-        $pokemons = $pokeapi->pokemonGetAllv2($limit);
+        $pokemons = $pokeapi->pokemonGetAll($limit);
         
         if(isset($pokemons['error'])) {
             return $this->render('error.html.twig', [

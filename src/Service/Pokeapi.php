@@ -2,19 +2,15 @@
 
 namespace App\Service;
 
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class Pokeapi
 {
 
-    private HttpClientInterface $client;
-    private CacheInterface $cache;
+    public function __construct(private HttpClientInterface $client,private CacheInterface $cache, private int $pokemonCacheTtl) {
 
-    public function __construct(HttpClientInterface $client, CacheInterface $cache)
-    {
-        $this->client = $client;
-        $this->cache = $cache;
     }
 
     private function getTranslateName(array $names, string $locale) {
@@ -30,7 +26,7 @@ class Pokeapi
     {
         return $this->cache->get('pokemon_' . strtolower($name), function($item) use ($name){
             try {
-                $item->expiresAfter(3600);
+                $item->expiresAfter($this->pokemonCacheTtl);
                 $pokemonResponse = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon/' . strtolower($name));
                 $pokemonSpeciesResponse = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon-species/' . strtolower($name));
 
@@ -40,7 +36,6 @@ class Pokeapi
                 $nameFr = $this->getTranslateName($pokemonSpecies['names'], 'fr');
 
                 $content = [
-                    // 'id' => $pokemon['id'],
                     'sprite' => $pokemon['sprites']['other']['official-artwork']['front_default'],
                     'name' => $nameFr ?? $pokemon['name'],
                     'height' => $pokemon['height'] * 0.1,
@@ -62,11 +57,11 @@ class Pokeapi
         });
     }
 
-    public function pokemonGetAllv2(int $limit): array
+    public function pokemonGetAll(int $limit): array
     {
         return $this->cache->get('pokemon_list_' . $limit, function($item) use ($limit) {
             try {
-                $item->expiresAfter(3600);
+                $item->expiresAfter($this->pokemonCacheTtl);
                 
                 $pokemonListResponse = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon?limit=' . $limit);
                 $pokemonList = $pokemonListResponse->toArray();
@@ -87,7 +82,6 @@ class Pokeapi
                     $nameFr = $this->getTranslateName($pokemonSpecies['names'], 'fr');
   
                     $contents[] = [
-                        // 'id'     => $data['id'],
                         'sprite' => $pokemon['sprites']['other']['official-artwork']['front_default'],
                         'name'   => $nameFr ?? $pokemon['name'],
                         'nameEn'   => $pokemon['name'],
