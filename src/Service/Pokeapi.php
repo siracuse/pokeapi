@@ -2,42 +2,33 @@
 
 namespace App\Service;
 
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class Pokeapi
 {
 
-    public function __construct(private HttpClientInterface $client,private CacheInterface $cache, private int $pokemonCacheTtl) {
-
-    }
-
-    private function getTranslateName(array $names, string $locale) {
-        foreach ($names as $entry) {
-            if ($entry['language']['name'] === $locale) {
-                return $entry['name'];
-            }
-        }
-        return null;
-    }
+    public function __construct(private HttpClientInterface $client, private CacheInterface $cache, private int $pokemonCacheTtl) 
+    {}
 
     public function pokemonGetSingle(string $name): array
     {
         return $this->cache->get('pokemon_' . strtolower($name), function($item) use ($name){
             try {
                 $item->expiresAfter($this->pokemonCacheTtl);
+                
                 $pokemonResponse = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon/' . strtolower($name));
-                $pokemonSpeciesResponse = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon-species/' . strtolower($name));
+                // $pokemonSpeciesResponse = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon-species/' . strtolower($name));
 
                 $pokemon = $pokemonResponse->toArray();
-                $pokemonSpecies = $pokemonSpeciesResponse->toArray();
+                // $pokemonSpecies = $pokemonSpeciesResponse->toArray();
                 
-                $nameFr = $this->getTranslateName($pokemonSpecies['names'], 'fr');
+                
+                // $nameFr = $this->getTranslateName($pokemonSpecies['names'], 'fr');
 
                 $content = [
                     'sprite' => $pokemon['sprites']['other']['official-artwork']['front_default'],
-                    'name' => $nameFr ?? $pokemon['name'],
+                    'name' => $pokemon['name'],
                     'height' => $pokemon['height'] * 0.1,
                     'weight' => $pokemon['weight'] * 0.1,
                     'types' => array_map(fn($type) => $type['type']['name'], $pokemon['types']),
@@ -47,7 +38,7 @@ class Pokeapi
                             'base_stat' => $stat['base_stat'],
                         ],
                         $pokemon['stats']
-                    ),
+                    )
                 ];
                 return $content;
             } catch (\Throwable) {
@@ -67,24 +58,24 @@ class Pokeapi
                 $pokemonList = $pokemonListResponse->toArray();
 
                 $pokemonResponses = [];
-                $pokemonSpeciesResponses = [];
+                // $pokemonSpeciesResponses = [];
                 
                 foreach ($pokemonList['results'] as $pokemon) {
                     $pokemonResponses[] = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon/' . $pokemon['name']);
-                    $pokemonSpeciesResponses[] = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon-species/' . $pokemon['name']);
+                    // $pokemonSpeciesResponses[] = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon-species/' . $pokemon['name']);
                 }   
 
                 $contents = [];
-                foreach ($pokemonResponses as $index => $pokemonResponse) {
+                foreach ($pokemonResponses as $pokemonResponse) {
                     $pokemon = $pokemonResponse->toArray();
-                    $pokemonSpecies = $pokemonSpeciesResponses[$index]->toArray();
+                    // $pokemonSpecies = $pokemonSpeciesResponses[$index]->toArray();
                     
-                    $nameFr = $this->getTranslateName($pokemonSpecies['names'], 'fr');
+                    // $nameFr = $this->getTranslateName($pokemonSpecies['names'], 'fr');
   
                     $contents[] = [
                         'sprite' => $pokemon['sprites']['other']['official-artwork']['front_default'],
-                        'name'   => $nameFr ?? $pokemon['name'],
-                        'nameEn'   => $pokemon['name'],
+                        'name'   => $pokemon['name'],
+                        // 'nameEn'   => $pokemon['name'],
                         'types'  => array_map(fn($type) => $type['type']['name'], $pokemon['types']),
                     ];
                 }
@@ -95,4 +86,14 @@ class Pokeapi
             }
         });
     }
+
+    // private function getTranslateName(array $names, string $locale) 
+    // {
+    //     foreach ($names as $entry) {
+    //         if ($entry['language']['name'] === $locale) {
+    //             return $entry['name'];
+    //         }
+    //     }
+    //     return null;
+    // }
 }

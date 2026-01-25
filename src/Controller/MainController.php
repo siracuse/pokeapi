@@ -10,7 +10,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class MainController extends AbstractController
 {
-    #[Route('/', name: 'index')]
+    #[Route('/{_locale}', name: 'index', defaults:['_locale' => 'en'])]
     public function index(Pokeapi $pokeapi, Request $request) {
         
         $limit = $request->query->getInt('limit', 10);
@@ -38,9 +38,7 @@ final class MainController extends AbstractController
         ]);
     }
 
-
-
-    #[Route('/pokemon/{name}', name: 'pokemon')]
+    #[Route('/{_locale}/pokemon/{name}', name: 'pokemon', defaults:['_locale' => 'en'])]
     public function pokemon(Pokeapi $pokeapi, string $name) {
         
         $pokemon = $pokeapi->pokemonGetSingle($name);

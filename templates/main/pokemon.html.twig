@@ -5,14 +5,18 @@
 {% block body %}
 
 	<div class="pokemonDetail">
-		<h1>{{pokemon.name}}</h1>
+		<h1>{{pokemon.name|trans({}, 'pokemon')}}</h1>
 		<div><img src="{{pokemon.sprite}}" alt="" width='200px'></div>
 
+		<div class='flex justify-center gap-10'>
+			{% for type in pokemon.types %}
+				<div class="type {{ type }}">{{ type|trans({}, 'types') }}</div>
+			{% endfor %}
+		</div>
+
 		<div class="infos">
-			<div>{{pokemon.height}}
-				m</div>
-			<div>{{pokemon.weight}}
-				kg</div>
+			<div>{{'Height'|trans}} : {{pokemon.height}}m</div>
+			<div>{{'Weight'|trans}} : {{pokemon.weight}}kg</div>
 		</div>
 
 		<div class="stats">
@@ -23,10 +27,9 @@
 				</div>
 			{% endfor %}
 		</div>
-	</div>
 
-	<div class="mt-40 text-center">
-		<a href="{{ path('index') }}" onclick="window.history.back(); return false;" class="btn-primary">Retour</a>
-	</div>
+		<div class="mt-40 text-center">
+			<a href="{{ path('index') }}" onclick="window.history.back(); return false;" class="btn-primary">{{'Back'|trans}}</a>
+		</div>
 
-{% endblock %}
+	{% endblock %}
