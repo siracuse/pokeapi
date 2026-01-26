@@ -28,7 +28,13 @@ final class MainController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $name = $data['search'];
-            return $this->redirectToRoute('pokemon', ['name' => $name]);
+            $id = $pokeapi->nameFrtoEn($name);
+            if(!$id) {
+                return $this->render('error.html.twig', [
+                'message' => 'Pokémon introuvable'
+            ]);
+            }
+            return $this->redirectToRoute('pokemon', ['name' => $id]);
         }
         return $this->render('main/index.html.twig', [
             'pokemons' => $pokemons,
