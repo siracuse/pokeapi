@@ -27,8 +27,8 @@ final class MainController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            $name = $data['search'];
-            $id = $pokeapi->nameFrtoEn($name);
+            $nameSearch = $data['search'];
+            $id = $pokeapi->nameFrtoEn($nameSearch);
             if(!$id) {
                 return $this->render('error.html.twig', [
                 'message' => 'Pokémon introuvable'
