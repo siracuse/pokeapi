@@ -1,0 +1,15 @@
+{% for pokemon in pokemons %}
+    <div>
+        <a class="pokemon" href="{{ path('pokemon', { name: pokemon.name }) }}">
+            <div><img src="{{ pokemon.sprite }}" alt="" width="200px"></div>
+
+            <div>{{ pokemon.name|trans({}, 'pokemon') }}</div>
+            <div>
+                {% for type in pokemon.types %}
+                    <div class="type {{ type }}">{{ type|trans({}, 'types') }}
+                    </div>
+                {% endfor %}
+            </div>
+        </a>
+    </div>
+{% endfor %}

@@ -4,6 +4,7 @@ namespace App\Service;
 
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class Pokeapi
 {
@@ -20,7 +21,8 @@ class Pokeapi
         'poussacha'=>906,'sprigatito'=>906,'matourgeon'=>907,'floragato'=>907,'miascarade'=>908,'meowscarada'=>908,'chocodile'=>909,'fuecoco'=>909,'crocogril'=>910,'crocalor'=>910,'flâmigator'=>911,'skeledirge'=>911,'coiffeton'=>912,'quaxly'=>912,'canarbello'=>913,'quaxwell'=>913,'palafin'=>914,'quaquaval'=>914,'gourmelet'=>915,'lechonk'=>915,'fragroin'=>916,'oinkologne'=>916,'tissenlit'=>917,'tarountula'=>917,'filentrappe'=>918,'spidops'=>918,'lépidus'=>919,'nymble'=>919,'gambex'=>920,'lokix'=>920,'pohm'=>921,'pawmi'=>921,'pohmotte'=>922,'pawmo'=>922,'pohmarmotte'=>923,'pawmot'=>923,'compagnol'=>924,'tandemaus'=>924,'famignol'=>925,'maushold'=>925,'pâtachiot'=>926,'fidough'=>926,'briochien'=>927,'dachsbun'=>927,'olivini'=>928,'smoliv'=>928,'olivado'=>929,'dolliv'=>929,'arboliva'=>930,'arboliva'=>930,'tapatoès'=>931,'squawkabilly'=>931,'selutin'=>932,'nacli'=>932,'amassel'=>933,'naclstack'=>933,'gigansel'=>934,'garganacl'=>934,'charbambin'=>935,'charcadet'=>935,'carmadura'=>936,'armarouge'=>936,'malvalame'=>937,'ceruledge'=>937,'têtampoule'=>938,'tadbulb'=>938,'ampibidou'=>939,'bellibolt'=>939,'zapétrel'=>940,'wattrel'=>940,'fulgula'=>941,'kilowattrel'=>941,'gribouraigne'=>942,'maschiff'=>942,'dogrino'=>943,'mabosstiff'=>943,'gribouraigne'=>944,'shroodle'=>944,'gribouraigne'=>945,'grafaiai'=>945,'vrombi'=>946,'bramblin'=>946,'virevorreur'=>947,'brambleghast'=>947,'terracool'=>948,'toedscool'=>948,'terracruel'=>949,'toedscruel'=>949,'crapard'=>950,'klawf'=>950,'forgerette'=>951,'capsakid'=>951,'scalpion'=>952,'scovillain'=>952,'vrombi'=>953,'rellor'=>953,'vrombotor'=>954,'rabsca'=>954,'flotillon'=>955,'flittle'=>955,'cleopsytra'=>956,'espathra'=>956,'tissambre'=>957,'tinkatink'=>957,'forgella'=>958,'tinkatuff'=>958,'forgelina'=>959,'tinkaton'=>959,'taupeul'=>960,'wiglett'=>960,'triopeul'=>961,'wugtrio'=>961,'courrousinge'=>962,'annihilape'=>962,'farigiraf'=>963,'farigiraf'=>963,'deusolourdo'=>964,'dudunsparce'=>964,'scourbaf'=>965,'orthworm'=>965,'flamenroule'=>966,'cyclizar'=>966,'piétacé'=>967,'cetoddle'=>967,'balbuto'=>968,'cetitan'=>968,'dofin'=>969,'finizen'=>969,'superdofin'=>970,'palafin'=>970,'scalpion'=>971,'greavard'=>971,'courrousse'=>972,'houndstone'=>972,'floréclat'=>973,'flamigo'=>973,'piétacé'=>974,'veluza'=>974,'delestin'=>975,'dondozo'=>975,'oyacata'=>976,'tatsugiri'=>976,'anoret'=>977,'annihilape'=>977,'fort-ivoire'=>978,'greattusk'=>978,'roue-de-fer'=>979,'irontreads'=>979,'hurle-queue'=>980,'screamtail'=>980,'colère-ailes'=>981,'brutebonnet'=>981,'rampe-ailes'=>982,'fluttermane'=>982,'pelage-sable'=>983,'slitherwing'=>983,'reptincel'=>984,'sandyshocks'=>984,'garde-de-fer'=>985,'ironbundle'=>985,'paume-de-fer'=>986,'ironhands'=>986,'tête-de-fer'=>987,'ironjugulis'=>987,'épée-de-fer'=>988,'ironmoth'=>988,'épine-de-fer'=>989,'ironthorns'=>989,'rocher-de-fer'=>990,'ironvaliant'=>990,'frigodo'=>991,'frigibax'=>991,'cryodo'=>992,'arctibax'=>992,'glaivodo'=>993,'baxcalibur'=>993,'mordudor'=>994,'gimmighoul'=>994,'gromago'=>995,'gholdengo'=>995,'champignon'=>996,'wo-chien'=>996,'feu-perçant'=>997,'chien-pao'=>997,'tonnerre-pourpre'=>998,'ting-lu'=>998,'dragon-foudre'=>999,'chi-yu'=>999,'koraidon'=>1000,'koraidon'=>1000,'miraidon'=>1001,'miraidon'=>1001,'courroux-plumage'=>1002,'walkingwake'=>1002,'vert-de-fer'=>1003,'ironleaves'=>1003,'poltchageist'=>1012,'poltchageist'=>1012,'théffroyable'=>1013,'sinistcha'=>1013,'okidogi'=>1014,'okidogi'=>1014,'munkidori'=>1015,'munkidori'=>1015,'fézandipiti'=>1016,'fezandipiti'=>1016,'ogrepon'=>1017,'ogerpon'=>1017,'ponytaly'=>1018,'archaludon'=>1018,'ponytaly'=>1019,'hydrapple'=>1019,'gougingfire'=>1020,'gougingfire'=>1020,'ragingbolt'=>1021,'ragingbolt'=>1021,'ironboulder'=>1022,'ironboulder'=>1022,'ironcrown'=>1023,'ironcrown'=>1023,'terapagos'=>1024,'terapagos'=>1024,'pecharunt'=>1025,'pecharunt'=>1025,
     ];
 
-    public function __construct(private HttpClientInterface $client, private CacheInterface $cache, private int $pokemonCacheTtl) 
+    public function __construct(private HttpClientInterface $client, private CacheInterface $cache, private int $pokemonCacheTtl, 
+    ) 
     {}
 
     public function pokemonGetSingle(string $name): array
@@ -55,13 +57,13 @@ class Pokeapi
         });
     }
 
-    public function pokemonGetAll(int $limit): array
+    public function pokemonGetAll(int $limit, int $offset = 0): array
     {
-        return $this->cache->get('pokemon_list_' . $limit, function($item) use ($limit) {
+        return $this->cache->get('pokemon_list_' . $limit . '_' . $offset, function($item) use ($limit, $offset) {
             try {
                 $item->expiresAfter($this->pokemonCacheTtl);
                 
-                $pokemonListResponse = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon?limit=' . $limit);
+                $pokemonListResponse = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon?limit=' . $limit .'&offset='. $offset);
                 $pokemonList = $pokemonListResponse->toArray();
 
                 $pokemonResponses = [];
@@ -73,7 +75,7 @@ class Pokeapi
                 $contents = [];
                 foreach ($pokemonResponses as $pokemonResponse) {
                     $pokemon = $pokemonResponse->toArray();
-  
+                    
                     $contents[] = [
                         'sprite' => $pokemon['sprites']['other']['official-artwork']['front_default'],
                         'name'   => $pokemon['name'],

@@ -8,26 +8,33 @@
 		{{form(form)}}
 	</div>
 
-	<div class="pokemonGrid">
-		{% for pokemon in pokemons%}
-			<div>
-				<a class='pokemon' href="{{ path('pokemon', {name: pokemon.name}) }}">
-					<div><img src="{{pokemon.sprite}}" alt="" width='200px'></div>
-
-					<div>{{ pokemon.name|trans({}, 'pokemon') }}</div>
-					<div>
-						{% for type in pokemon.types %}
-							<div class="type {{ type }}">{{ type|trans({}, 'types') }}</div>
-						{% endfor %}
-					</div>
-				</a>
-			</div>
-		{% endfor %}
+	<div class="pokemonGrid" id="pokemonGrid">
+		{% include 'main/_pokemon_list.html.twig' with { pokemons: pokemons } %}
 	</div>
 
 	<div class="my-20 text-center">
-		<a href="{{ path('index', {limit: nextLimit}) }}" class="btn-primary">{{ "Load more Pokémon"|trans}}</a>
+		<button id="loadMoreBtn" data-offset="{{ limit }}" class="btn-primary">
+			{{ "Load more Pokémon"|trans }}
+		</button>
 	</div>
 
-	<footer></footer>
+	<footer>
+		<script>
+		document.getElementById('loadMoreBtn').addEventListener('click', async function () {
+			const btn = this;
+			let offset = parseInt(btn.dataset.offset);
+
+			btn.disabled = true;
+			const response = await fetch(`{{ path('load_more', {'_locale': app.request.locale}) }}?offset=${offset}`);
+			const html = await response.text();
+
+			    document
+				.getElementById('pokemonGrid')
+				.insertAdjacentHTML('beforeend', html);
+
+			btn.dataset.offset = offset + 10;
+			btn.disabled = false;
+		});
+		</script>
+	</footer>
 {% endblock %}

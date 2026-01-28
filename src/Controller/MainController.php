@@ -5,7 +5,9 @@ namespace App\Controller;
 use App\Form\PokemonSearchType;
 use App\Service\Pokeapi;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class MainController extends AbstractController
@@ -13,9 +15,10 @@ final class MainController extends AbstractController
     #[Route('/{_locale}', name: 'index', defaults:['_locale' => 'fr'])]
     public function index(Pokeapi $pokeapi, Request $request) {
         
-        $limit = $request->query->getInt('limit', 10);
-        $nextLimit = $limit + 10;
-        $pokemons = $pokeapi->pokemonGetAll($limit);
+        $limit = 10;
+        $offset = 0;
+
+        $pokemons = $pokeapi->pokemonGetAll($limit, $offset);
         
         if(isset($pokemons['error'])) {
             return $this->render('error.html.twig', [
@@ -36,11 +39,30 @@ final class MainController extends AbstractController
             }
             return $this->redirectToRoute('pokemon', ['name' => $id]);
         }
+        
         return $this->render('main/index.html.twig', [
             'pokemons' => $pokemons,
             'form' => $form,
             'limit' => $limit,
-            'nextLimit' => $nextLimit
+            'offset' => $offset
+        ]);
+    }
+
+    #[Route('/{_locale}/load-more', name: 'load_more', methods: ['GET'])]
+    public function loadMore(Pokeapi $pokeapi, Request $request): Response
+    {
+        $limit = 10;
+        $offset = $request->query->getInt('offset', 0);
+        $pokemons = $pokeapi->pokemonGetAll($limit, $offset);
+        
+        if(isset($pokemons['error'])) {
+            return $this->render('error.html.twig', [
+                'message' => $pokemons['message']
+            ]);
+        }
+
+        return $this->render('main/_pokemon_list.html.twig', [
+            'pokemons' => $pokemons,
         ]);
     }
 
