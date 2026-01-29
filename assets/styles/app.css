@@ -107,11 +107,11 @@ a {
 
 .pokemonDetail h1 {
     text-transform: capitalize;
-    margin-bottom: 15px;
 }
 
 .pokemonDetail img {
     margin: 15px 0;
+    width: 200px;
 }
 
 .pokemonDetail .infos {
@@ -121,19 +121,56 @@ a {
     font-weight: bold;
 }
 
-/* Stats */
-.stats {
-    margin-top: 20px;
+/* Stats bars */
+.stat {
+    margin-bottom: 12px;
 }
 
-.stats div {
+.stat-header {
     display: flex;
     justify-content: space-between;
-    padding: 6px 0;
-    border-bottom: 1px solid #eee;
-    text-transform: capitalize;
+    font-size: 0.9rem;
+    margin-bottom: 4px;
 }
 
+.stat-bar {
+    width: 100%;
+    height: 8px;
+    background-color: #e5e7eb;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.stat-fill {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.4s ease;
+}
+
+/* Couleurs selon la force */
+.stat-fill.low {
+    background-color: #ef4444; 
+}
+
+.stat-fill.medium {
+    /* background-color: #f59e0b; */
+    background-color: #ed7e1b; 
+}
+.stat-fill.good{
+    background-color: #edc81b;
+} 
+.stat-fill.high {
+    background-color: #22c55e;
+}
+
+/* Total */
+.stat.total {
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+
+/* BARRE DE RECHERCHE */
 .pokemonSearch {
     display: flex;
     justify-content: center;
@@ -177,4 +214,8 @@ a {
 
 footer {
     height: 500px;
+}
+
+nav {
+    margin-bottom: 10px;
 }

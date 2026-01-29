@@ -1,13 +1,32 @@
+/* FLEX */
 .flex {
     display: flex;
 }
 .justify-center {
     justify-content: center;
 }
+.align-center {
+    align-items: center;
+}
 .gap-10 {
     gap: 10px;
 }
 
+/* MARGIN - PADDING*/
+.my-20 {
+    margin: 20px 0;
+}
+.mt-40 {
+    margin-top: 40px;
+}
+.mb-10 {
+    margin-bottom: 10px;
+}
+.mb-20 {
+    margin-bottom: 20px;
+}
+
+/* COMPONENTS */
 .btn-primary {
     padding: 0.6rem 1rem;
     background-color: #30a7d7;
@@ -17,12 +36,12 @@
     margin: 10px 0;
 }
 
-.my-20 {
-    margin: 20px 0;
-}
-.mt-40 {
-    margin-top: 40px;
-}
+/* OTHER */
 .text-center {
     text-align: center;
+}
+
+.img {
+  width: 100%;
+  height: auto;
 }

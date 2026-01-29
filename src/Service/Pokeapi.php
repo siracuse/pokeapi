@@ -35,19 +35,24 @@ class Pokeapi
 
                 $pokemon = $pokemonResponse->toArray();
 
+                $stats = array_map(
+                    fn($stat) => [
+                        'name' => $stat['stat']['name'],
+                        'base_stat' => $stat['base_stat'],
+                    ],
+                    $pokemon['stats']
+                );
+                $totalStats = array_sum(array_column($stats, 'base_stat'));
+
                 $content = [
+                    'id' => $pokemon['id'],
                     'sprite' => $pokemon['sprites']['other']['official-artwork']['front_default'],
                     'name' => $pokemon['name'],
                     'height' => $pokemon['height'] * 0.1,
                     'weight' => $pokemon['weight'] * 0.1,
                     'types' => array_map(fn($type) => $type['type']['name'], $pokemon['types']),
-                    'stats'  => array_map(
-                        fn($stat) => [
-                            'name' => $stat['stat']['name'],
-                            'base_stat' => $stat['base_stat'],
-                        ],
-                        $pokemon['stats']
-                    )
+                    'stats'  => $stats,
+                    'stats_total' => $totalStats,                    
                 ];
                 return $content;
             } catch (\Throwable) {
