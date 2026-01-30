@@ -1,0 +1,97 @@
+<div class="flex gap-100">
+	<div class="text-center">
+		<div class="flex justify-center align-center gap-10 mb-10">
+			<div>#{{ pokemon.id }}</div>
+			<h1>{{pokemon.name|trans({}, 'pokemon')|capitalize}}</h1>
+		</div>
+		{% if app.request.locale == "en" %}
+			<h3>{{pokemon.name|trans({}, 'pokemon', 'fr')|capitalize}}</h3>
+		{% else %}
+			<h3>{{pokemon.name|capitalize}}</h3>
+		{% endif %}
+		<div>
+			<img src="{{pokemon.sprite}}" alt="" class="img">
+		</div>
+
+		<div class='flex justify-center gap-10'>
+			{% for type in pokemon.types %}
+				<div class="type {{ type }}">{{ type|trans({}, 'types') }}</div>
+			{% endfor %}
+		</div>
+	</div>
+
+
+	<div>
+		<h2 class="mb-40">Sensibilités de
+			{{pokemon.name|trans({}, 'pokemon')|capitalize}}</h2>
+		{% if pokemon.damage is defined %}
+			<div class="flex gap-40 flex-column">
+				{% if pokemon.damage.immunities %}
+					<div>
+						<div class="bold titleForceFaiblesse">Immunité(s) :</div>
+						<div class="flex">
+							{% for immunity in pokemon.damage.immunities %}
+								<div class="type {{ immunity }}">{{ immunity|trans({}, 'types') }}</div>
+							{% endfor %}
+						</div>
+					</div>
+				{% endif %}
+
+				{% if pokemon.damage.resistances or pokemon.damage.resistances %}
+					<div>
+						<div class="bold titleForceFaiblesse">Résistances :</div>
+						<div class="flex gap-10 mb-5 align-center">
+							{% if pokemon.damage.strong_resistances %}
+								<div class="bold">(x 0.25) :</div>
+							{% endif %}
+							{% for strongResistance in pokemon.damage.strong_resistances %}
+								<div class="type {{ strongResistance }}">{{ strongResistance|trans({}, 'types') }}</div>
+							{% endfor %}
+						</div>
+						<div class="flex gap-10 align-center">
+							{% if pokemon.damage.resistances %}
+								<div class="bold">(x 0.5) :</div>
+							{% endif %}
+							{% for resistance in pokemon.damage.resistances %}
+								<div class="type {{ resistance }}">{{ resistance|trans({}, 'types') }}</div>
+							{% endfor %}
+						</div>
+
+					</div>
+				{% endif %}
+
+
+				{% if pokemon.damage.weaknesses or pokemon.damage.strong_weaknesses %}
+					<div>
+						<div class="bold titleForceFaiblesse">Faiblesses :</div>
+						<div class="flex gap-10 mb-5 align-center">
+							{% if pokemon.damage.weaknesses %}
+								<div class="bold">(x 2) :</div>
+							{% endif %}
+							{% for weakness in pokemon.damage.weaknesses %}
+								<div class="type {{ weakness }}">{{ weakness|trans({}, 'types') }}</div>
+							{% endfor %}
+						</div>
+
+						<div class="flex gap-10 align-center">
+							{% if pokemon.damage.strong_weaknesses %}
+								<div class="bold">(x 4) :</div>
+							{% endif %}
+							{% for strongWeakness in pokemon.damage.strong_weaknesses %}
+								<div class="type {{ strongWeakness }}">{{ strongWeakness|trans({}, 'types') }}</div>
+							{% endfor %}
+						</div>
+					</div>
+				{% endif %}
+
+				{% if pokemon.damage.strong_weaknesses %}
+					<div></div>
+				{% endif %}
+			</div>
+
+		{% else %}
+			<div>Pas d'information sur les résistances/faiblesses.</div>
+		{% endif %}
+
+	</div>
+</div>

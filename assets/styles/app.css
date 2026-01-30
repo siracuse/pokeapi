@@ -95,8 +95,8 @@ a {
    FICHE POKÉMON
 -------------------- */
 .pokemonWidget {
-    max-width: 500px;
-    margin: 0 auto;
+    /* max-width: 500px;
+    margin: 0 auto; */
     background-color: #ffffff;
     border-radius: 16px;
     padding: 25px;
@@ -226,7 +226,9 @@ nav {
     height: fit-content;
 }
 
-
+.pokemonTeambuild img{
+    width: 260px;
+}
 
 @media all and (min-width: 1000px) {
     

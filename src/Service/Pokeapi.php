@@ -26,13 +26,14 @@ class Pokeapi
     ) 
     {}
 
+    // Faire les vérifications au niveau du name --> teambuild
     public function pokemonGetSingle(string $name): array
     {
-        return $this->cache->get('pokemon_' . strtolower($name), function($item) use ($name){
+    return $this->cache->get('pokemon_' . strtolower($name), function($item) use ($name){
             try {
                 $item->expiresAfter($this->pokemonCacheTtl);
-                
-                $pokemonResponse = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon/' . strtolower($name));
+                    
+                $pokemonResponse = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon/' . ($name));
 
                 $pokemon = $pokemonResponse->toArray();
 

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Form\PokemonSearchType;
+use App\Form\PokemonTeamBuildType;
 use App\Service\Pokeapi;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -13,8 +14,8 @@ use Symfony\Component\Routing\Attribute\Route;
 final class MainController extends AbstractController
 {
     #[Route('/{_locale}', name: 'index', defaults:['_locale' => 'fr'])]
-    public function index(Pokeapi $pokeapi, Request $request) {
-        
+    public function index(Pokeapi $pokeapi, Request $request) 
+    {
         $limit = 10;
         $offset = 0;
 
@@ -67,7 +68,8 @@ final class MainController extends AbstractController
     }
 
     #[Route('/{_locale}/pokemon/{name}', name: 'pokemon', defaults:['_locale' => 'fr'])]
-    public function pokemon(Pokeapi $pokeapi, string $name) {
+    public function pokemon(Pokeapi $pokeapi, string $name) 
+    {
         
         $pokemon = $pokeapi->pokemonGetSingle($name);
         
@@ -77,6 +79,40 @@ final class MainController extends AbstractController
             ]);
         }
         return $this->render('main/pokemon.html.twig', [
+            'pokemon' => $pokemon
+        ]);
+    }
+
+
+
+    // ROUTE POUR LE TEAM BUILD
+    #[Route('/{_locale}/teambuild', name: 'teambuild', defaults:['_locale' => 'fr'])]
+    public function teambuild() 
+    {
+        $form = $this->createForm(PokemonTeamBuildType::class);
+
+        return $this->render('main/teambuild.html.twig', [
+            'form' => $form
+        ]);
+    }
+
+    // ROUTE AJAX
+    #[Route('/{_locale}/teambuild/pokemon/{name}', name: 'teambuild_pokemon', defaults:['_locale' => 'fr'])]
+    public function teambuildPokemon(Pokeapi $pokeapi, string $name) 
+    {       
+        $id = $pokeapi->nameFrtoEn($name);
+        if(!$id) {
+            return $this->render('error.html.twig', [
+                'message' => 'Pokémon introuvable'
+            ]);
+        }       
+        $pokemon = $pokeapi->pokemonGetSingle($id); 
+        if(isset($pokemon['error'])) {
+            return $this->render('error.html.twig', [
+                'message' => $pokemon['message']
+            ]);
+        }
+        return $this->render('main/_teambuildPokemon.html.twig', [
             'pokemon' => $pokemon
         ]);
     }
