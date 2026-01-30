@@ -72,37 +72,38 @@ a {
     text-transform: capitalize;
 }
 /* Types principaux */
-.fire { background-color: #ff3b30; }
-.water { background-color: #007aff; }
-.grass { background-color: #00c853; }
-.electric { background-color: #ffd60a; color: #2f3640; }
-.ice { background-color: #5ac8fa; }
-.fighting { background-color: #ff453a; }
-.poison { background-color: #af52de; }
-.ground { background-color: #ff9f0a; color: #2f3640; }
-.flying { background-color: #64d2ff; color: #2f3640; }
-.psychic { background-color: #ff2d55; }
-.bug { background-color: #34c759; color: #2f3640; }
-.rock { background-color: #bf8f00; }
-.ghost { background-color: #5e5ce6; }
-.dark { background-color: #1c1c1e; }
-.dragon { background-color: #0a84ff; }
-.steel { background-color: #8e8e93; color: #2f3640; }
-.fairy { background-color: #ff9ff3; color: #2f3640; }
-.normal { background-color: #c7c7cc; color: #2f3640; }
+.fire { background-color: #E72324;}
+.water { background-color: #2481EF;}
+.grass { background-color: #3DA224;}
+.electric { background-color: #FAC100;}
+.ice { background-color: #3DD9FF;}
+.fighting { background-color: #FF8100;}
+.poison { background-color: #923FCC;}
+.ground { background-color: #92501B;}
+.flying { background-color: #82BAEF;}
+.psychic { background-color: #EF3F7A;}
+.bug { background-color: #92A212;}
+.rock { background-color: #B0AA82;}
+.ghost { background-color: #703F70;}
+.dark { background-color: #4F3F3D;}
+.dragon { background-color: #4F60E2;}
+.steel { background-color: #60A2B9;}
+.fairy { background-color: #EF70EF;}
+.normal { background-color: #A0A2A0;}
 
 /* --------------------
    FICHE POKÉMON
 -------------------- */
-
-.pokemonDetail {
+.pokemonWidget {
     max-width: 500px;
     margin: 0 auto;
     background-color: #ffffff;
     border-radius: 16px;
     padding: 25px;
-    text-align: center;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+.pokemonDetail {
+    text-align: center;
 }
 
 .pokemonDetail h1 {
@@ -147,13 +148,11 @@ a {
     transition: width 0.4s ease;
 }
 
-/* Couleurs selon la force */
 .stat-fill.low {
     background-color: #ef4444; 
 }
 
 .stat-fill.medium {
-    /* background-color: #f59e0b; */
     background-color: #ed7e1b; 
 }
 .stat-fill.good{
@@ -163,7 +162,6 @@ a {
     background-color: #22c55e;
 }
 
-/* Total */
 .stat.total {
     margin-top: 15px;
     font-weight: bold;
@@ -211,11 +209,32 @@ a {
     background-color: #d32f2f;
 }
 
-
+.titleForceFaiblesse {
+    border-bottom: 1px solid lightgray;
+    margin-bottom: 18px;
+}   
 footer {
     height: 500px;
 }
 
 nav {
     margin-bottom: 10px;
+}
+
+
+.pokemonForceFaiblesse {
+    height: fit-content;
+}
+
+
+
+@media all and (min-width: 1000px) {
+    
+    .pokemonWidget {
+        margin: 0;
+    }
+    .pokemonDetail{
+        width: 400px;
+    }
+
 }

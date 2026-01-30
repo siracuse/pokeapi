@@ -1,78 +1,147 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{% endblock %}
+{% block title %}{{pokemon.name|trans({}, 'pokemon')|capitalize}}{% endblock %}
 
 {% block body %}
 
-	<div class="pokemonDetail">
-		<div class="flex justify-center align-center gap-10 mb-10">
-			<div>#{{ pokemon.id }}</div>
-			<h1>{{pokemon.name|trans({}, 'pokemon')|capitalize}}</h1>
-		</div>
-		{% if app.request.locale == "en" %}
-			<h3>{{pokemon.name|trans({}, 'pokemon', 'fr')|capitalize}}</h3>
-		{% else %}
-			<h3>{{pokemon.name|capitalize}}</h3>
-		{% endif %}
-		<div>
-			<img src="{{pokemon.sprite}}" alt="" class="img">
-		</div>
-
-		<div class='flex justify-center gap-10'>
-			{% for type in pokemon.types %}
-				<div class="type {{ type }}">{{ type|trans({}, 'types') }}</div>
-			{% endfor %}
-		</div>
-
-		<div class="infos">
-			<div>{{'Height'|trans}}
-				:
-				{{pokemon.height}}m</div>
-			<div>{{'Weight'|trans}}
-				:
-				{{pokemon.weight}}kg</div>
-		</div>
-
-		<div class="stats">
-			{% for stat in pokemon.stats %}
-				{% set value = stat.base_stat %}
-				{% set percent = (value / 255 * 100)|round %}
-
-				{% if value < 60 %}
-					{% set level = 'low' %}
-				{% elseif value < 80 %}
-					{% set level = 'medium' %}
-				{% elseif value < 100 %}
-					{% set level = 'good' %}
-				{% else %}
-					{% set level = 'high' %}
-				{% endif %}
-
-				<div class="stat">
-					<div class="stat-header">
-						<span>{{ stat.name|trans({}, 'stats')|capitalize }}</span>
-						<span>{{ value }}</span>
-					</div>
-
-					<div class="stat-bar">
-						<div class="stat-fill {{ level }}" style="width: {{ percent }}%"></div>
-					</div>
-				</div>
-			{% endfor %}
-
-			<div class="stat total">
-				<div class="stat-header">
-					<span>Somme des statistiques de base</span>
-					<span>{{ pokemon.stats_total }}</span>
-				</div>
+	<div class="flex gap-20">
+		<div class="pokemonWidget pokemonDetail">
+			<div class="flex justify-center align-center gap-10 mb-10">
+				<div>#{{ pokemon.id }}</div>
+				<h1>{{pokemon.name|trans({}, 'pokemon')|capitalize}}</h1>
+			</div>
+			{% if app.request.locale == "en" %}
+				<h3>{{pokemon.name|trans({}, 'pokemon', 'fr')|capitalize}}</h3>
+			{% else %}
+				<h3>{{pokemon.name|capitalize}}</h3>
+			{% endif %}
+			<div>
+				<img src="{{pokemon.sprite}}" alt="" class="img">
 			</div>
 
+			<div class='flex justify-center gap-10'>
+				{% for type in pokemon.types %}
+					<div class="type {{ type }}">{{ type|trans({}, 'types') }}</div>
+				{% endfor %}
+			</div>
+
+			<div class="infos">
+				<div>{{'Height'|trans}}
+					:
+					{{pokemon.height}}m</div>
+				<div>{{'Weight'|trans}}
+					:
+					{{pokemon.weight}}kg</div>
+			</div>
+
+			<div class="stats">
+				{% for stat in pokemon.stats %}
+					{% set value = stat.base_stat %}
+					{% set percent = (value / 255 * 100)|round %}
+
+					{% if value < 60 %}
+						{% set level = 'low' %}
+					{% elseif value < 80 %}
+						{% set level = 'medium' %}
+					{% elseif value < 100 %}
+						{% set level = 'good' %}
+					{% else %}
+						{% set level = 'high' %}
+					{% endif %}
+
+					<div class="stat">
+						<div class="stat-header">
+							<span>{{ stat.name|trans({}, 'stats')|capitalize }}</span>
+							<span>{{ value }}</span>
+						</div>
+
+						<div class="stat-bar">
+							<div class="stat-fill {{ level }}" style="width: {{ percent }}%"></div>
+						</div>
+					</div>
+				{% endfor %}
+
+				<div class="stat total">
+					<div class="stat-header">
+						<span>Somme des statistiques de base</span>
+						<span>=
+							{{ pokemon.stats_total }}</span>
+					</div>
+				</div>
+
+
+			</div>
 
 		</div>
 
-		<div class="mt-40 text-center">
-			<a href="{{ path('index') }}" onclick="window.history.back(); return false;" class="btn-primary">{{'Back'|trans}}</a>
+		<div class="pokemonWidget pokemonForceFaiblesse">
+			<h2 class="mb-40">Sensibilités de
+				{{pokemon.name|trans({}, 'pokemon')|capitalize}}</h2>
+			{% if pokemon.damage is defined %}
+				<div class="flex gap-40 flex-column">
+					{% if pokemon.damage.immunities %}
+						<div>
+							<div class="bold titleForceFaiblesse">Immunité(s) :</div>
+							<div class="flex">
+								{% for immunity in pokemon.damage.immunities %}
+									<div class="type {{ immunity }}">{{ immunity|trans({}, 'types') }}</div>
+								{% endfor %}
+							</div>
+						</div>
+					{% endif %}
+
+					{% if pokemon.damage.resistances or pokemon.damage.resistances %}
+						<div>
+							<div class="bold titleForceFaiblesse">Résistances :</div>
+							<div class="flex gap-10 mb-5 align-center">
+								{% if pokemon.damage.strong_resistances %} <div class="bold">(x 0.25) :</div> {% endif %}
+								{% for strongResistance in pokemon.damage.strong_resistances %}
+									<div class="type {{ strongResistance }}">{{ strongResistance|trans({}, 'types') }}</div>
+								{% endfor %}
+							</div>
+							<div class="flex gap-10 align-center">
+								{% if pokemon.damage.resistances %} <div class="bold">(x 0.5) :</div> {% endif %}
+								{% for resistance in pokemon.damage.resistances %}
+									<div class="type {{ resistance }}">{{ resistance|trans({}, 'types') }}</div>
+								{% endfor %}
+							</div>
+
+						</div>
+					{% endif %}
+
+
+					{% if pokemon.damage.weaknesses or pokemon.damage.strong_weaknesses %}
+						<div>
+							<div class="bold titleForceFaiblesse">Faiblesses :</div>
+							<div class="flex gap-10 mb-5 align-center">
+								{% if pokemon.damage.weaknesses %} <div class="bold">(x 2) :</div> {% endif %}
+								{% for weakness in pokemon.damage.weaknesses %}
+									<div class="type {{ weakness }}">{{ weakness|trans({}, 'types') }}</div>
+								{% endfor %}
+							</div>
+
+							<div class="flex gap-10 align-center">
+								{% if pokemon.damage.strong_weaknesses %} <div class="bold">(x 4) :</div> {% endif %}
+								{% for strongWeakness in pokemon.damage.strong_weaknesses %}
+									<div class="type {{ strongWeakness }}">{{ strongWeakness|trans({}, 'types') }}</div>
+								{% endfor %}
+							</div>
+						</div>
+					{% endif %}
+
+					{% if pokemon.damage.strong_weaknesses %}
+						<div></div>
+					{% endif %}
+				</div>
+
+			{% else %}
+				<div>Pas d'information sur les résistances/faiblesses.</div>
+			{% endif %}
 		</div>
+
 	</div>
-
+	<div class="mt-40 text-center">
+		{# <a href="{{ path('index') }}" onclick="window.history.back(); return false;" class="btn-primary">{{'Back'|trans}}</a> #}
+		<a href="{{ path('index') }}" class="btn-primary">{{'Back'|trans}}</a>
+	</div>
 {% endblock %}

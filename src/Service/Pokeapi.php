@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use MultipleIterator;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -44,15 +45,58 @@ class Pokeapi
                 );
                 $totalStats = array_sum(array_column($stats, 'base_stat'));
 
+                // Récupération des types
+                $types = array_map(fn($type) => $type['type']['name'], $pokemon['types']);
+
+                // Calcul des résistances/faiblesses
+                $multipliers = [];
+                foreach ($types as $type) {
+                    $typeData = $this->client->request('GET', 'https://pokeapi.co/api/v2/type/' . $type)->toArray();
+                    $typeRelation = $typeData['damage_relations'];
+                    foreach ($typeRelation['double_damage_from'] as $t) {
+                        $multipliers[$t['name']] = ($multipliers[$t['name']] ?? 1) * 2;
+                    }
+                    foreach ($typeRelation['half_damage_from'] as $t) {
+                        $multipliers[$t['name']] = ($multipliers[$t['name']] ?? 1) * 0.5;
+                    }
+                    foreach ($typeRelation['no_damage_from'] as $t) {
+                        $multipliers[$t['name']] = ($multipliers[$t['name']] ?? 1) * 0;
+                    }
+                }
+                
+                $immunities = $resistances = $strongResistances = $weaknesses = $strongWeaknesses = [];
+                foreach ($multipliers as $type => $multiplier) {
+                    if ($multiplier == 0) {
+                        $immunities[] = $type;
+                    } elseif ($multiplier == 0.25) {
+                        $strongResistances[] = $type;
+                    } elseif ($multiplier == 0.5) {
+                        $resistances[] = $type;
+                    } elseif ($multiplier == 2) {
+                        $weaknesses[] = $type;
+                    } elseif ($multiplier == 4) {
+                        $strongWeaknesses[] = $type;
+                    }
+                }
+
+                // dd($multipliers);
+
                 $content = [
                     'id' => $pokemon['id'],
                     'sprite' => $pokemon['sprites']['other']['official-artwork']['front_default'],
                     'name' => $pokemon['name'],
                     'height' => $pokemon['height'] * 0.1,
                     'weight' => $pokemon['weight'] * 0.1,
-                    'types' => array_map(fn($type) => $type['type']['name'], $pokemon['types']),
+                    'types' => $types,
                     'stats'  => $stats,
-                    'stats_total' => $totalStats,                    
+                    'stats_total' => $totalStats,   
+                    'damage' => [
+                        'immunities' => $immunities,
+                        'resistances' => $resistances,
+                        'strong_resistances' => $strongResistances,
+                        'weaknesses' => $weaknesses,
+                        'strong_weaknesses' => $strongWeaknesses,
+                    ],                  
                 ];
                 return $content;
             } catch (\Throwable) {
@@ -102,5 +146,10 @@ class Pokeapi
         $sans    = ['a','a','a','a','a','a','ae','c','e','e','e','e','i','i','i','i','n','o','o','o','o','o','u','u','u','u','y','y'];
         $name = str_replace($accents, $sans, $name);
         return $this->map[$name] ?? null;
+    }
+
+    public function pokemonStrengthWeakness()
+    {
+
     }
 }
