@@ -137,4 +137,10 @@ final class MainController extends AbstractController
         return $this->render('main/tableType.html.twig');
     }
 
+    #[Route('/{_locale}/cobbleverse', name: 'cobbleverse', defaults:['_locale' => 'fr'])]
+    public function cobbleverse() 
+    {
+        return $this->render('main/cobbleverse.html.twig');
+    }
+
 }

@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Team build
+{% endblock %}
+
+{% block body %}
+
+	<div>
+		<h2 class="mb-20 mt-40">Les arènes</h2>
+
+		<div class="flex gap-20 flex-wrap">
+			
+			
+			<div class="pokemonWidget flex flex-column">
+				<h3 class="text-center mb-20">1 Brock</h3>
+				<div><img class="img-100 mb-20" src="{{ asset('images/arene/1.png') }}" alt=""></div>
+				<div class="mg-0-auto-20-auto text-center type rock">{{ 'rock'|trans({}, 'types') }}</div>
+				<p><span class="bold">xy</span> = -350; 50</p>
+			</div>
+			
+			
+			<div class="pokemonWidget flex flex-column">
+				<h3 class="text-center mb-20">2 Misty</h3>
+				<div><img class="img-100 mb-20" src="{{ asset('images/arene/2.png') }}" alt=""></div>
+				<div class="mg-0-auto-20-auto text-center type water">{{ 'water'|trans({}, 'types') }}</div>
+				<p><span class="bold">xy</span> = -3100; 1400</p>
+			</div>
+
+			<div class="pokemonWidget flex flex-column">
+				<h3 class="text-center mb-20">3 Lt. Surge</h3>
+				<div><img class="img-100 mb-20" src="{{ asset('images/arene/3.png') }}" alt=""></div>
+				<div class="mg-0-auto-20-auto text-center type electric">{{ 'electric'|trans({}, 'types') }}</div>
+				<p><span class="bold">xy</span> = 3950; 1450</p>
+			</div>
+
+			<div class="pokemonWidget flex flex-column">
+				<h3 class="text-center mb-20">4 Erika</h3>
+				<div><img class="img-100 mb-20" src="{{ asset('images/arene/4.png') }}" alt=""></div>
+				<div class="mg-0-auto-20-auto text-center type grass">{{ 'grass'|trans({}, 'types') }}</div>
+				<p><span class="bold">xy</span> = 5800; -1100</p>
+			</div>
+
+			<div class="pokemonWidget flex flex-column">
+				<h3 class="text-center mb-20">5 Koga</h3>
+				<div><img class="img-100 mb-20" src="{{ asset('images/arene/5.png') }}" alt=""></div>
+				<div class="mg-0-auto-20-auto text-center type poison">{{ 'poison'|trans({}, 'types') }}</div>
+				<p><span class="bold">xy</span> = 2550; -1200</p>
+			</div>
+
+			<div class="pokemonWidget flex flex-column">
+				<h3 class="text-center mb-20">6 Sabrina</h3>
+				<div><img class="img-100 mb-20" src="{{ asset('images/arene/6.png') }}" alt=""></div>
+				<div class="mg-0-auto-20-auto text-center type psychic">{{ 'psychic'|trans({}, 'types') }}</div>
+				<p><span class="bold">xy</span> = /</p>
+			</div>
+
+			<div class="pokemonWidget flex flex-column">
+				<h3 class="text-center mb-20">7 Blaine</h3>
+				<div><img class="img-100 mb-20" src="{{ asset('images/arene/7.png') }}" alt=""></div>
+				<div class="mg-0-auto-20-auto text-center type fire">{{ 'fire'|trans({}, 'types') }}</div>
+				<p><span class="bold">xy</span> = /</p>
+			</div>
+
+			<div class="pokemonWidget flex flex-column">
+				<h3 class="text-center mb-20">8 Giovanni</h3>
+				<div><img class="img-100 mb-20" src="{{ asset('images/arene/8.png') }}" alt=""></div>
+				<div class="mg-0-auto-20-auto text-center type ground">{{ 'ground'|trans({}, 'types') }}</div>
+				<p><span class="bold">xy</span> = /</p>
+			</div>
+
+		</div>
+
+
+	</div>
+
+{% endblock %}
