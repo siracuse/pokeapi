@@ -4,6 +4,10 @@
 
 {% block body %}
 
+	<div class="pokemonSearch">
+		{{form(form)}}
+	</div>
+
 	<div class="flex gap-20">
 		<div class="pokemonWidget pokemonDetail">
 			<div class="flex justify-center align-center gap-10 mb-10">
@@ -25,14 +29,14 @@
 				{% endfor %}
 			</div>
 
-			<div class="infos">
+			{# <div class="infos">
 				<div>{{'Height'|trans}}
 					:
 					{{pokemon.height}}m</div>
 				<div>{{'Weight'|trans}}
 					:
 					{{pokemon.weight}}kg</div>
-			</div>
+			</div> #}
 
 			<div class="stats">
 				{% for stat in pokemon.stats %}
@@ -82,7 +86,7 @@
 					{% if pokemon.damage.immunities %}
 						<div>
 							<div class="bold titleForceFaiblesse">Immunité(s) :</div>
-							<div class="flex">
+							<div class="flex gap-10 align-center">
 								{% for immunity in pokemon.damage.immunities %}
 									<div class="type {{ immunity }}">{{ immunity|trans({}, 'types') }}</div>
 								{% endfor %}
@@ -140,8 +144,8 @@
 		</div>
 
 	</div>
-	<div class="mt-40 text-center">
+	{# <div class="mt-40 text-center"> #}
 		{# <a href="{{ path('index') }}" onclick="window.history.back(); return false;" class="btn-primary">{{'Back'|trans}}</a> #}
-		<a href="{{ path('index') }}" class="btn-primary">{{'Back'|trans}}</a>
-	</div>
+		{# <a href="{{ path('index') }}" class="btn-primary">{{'Back'|trans}}</a> #}
+	{# </div> #}
 {% endblock %}

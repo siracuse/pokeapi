@@ -15,14 +15,23 @@
 		{% endblock %}
 	</head>
 	<body>
-		<nav>
+		<nav class="flex justify-between">
 			{% set currentRoute = app.request.attributes.get('_route') %}
 			{% set currentParams = app.request.attributes.get('_route_params') %}
-
-			<a href="{{ path(currentRoute, currentParams|merge({'_locale': 'fr'})) }}">FR</a>
-            /
-			<a href="{{ path(currentRoute, currentParams|merge({'_locale': 'en'})) }}">EN</a>
+			<div class="px-40">
+				<a href="{{ path('index') }}" class="mr-12"> ACCUEIL </a>
+				<a href="{{ path('teambuild') }}" class="mr-12"> TEAM BUILD </a>
+				<a href="{{ path('table_type') }}"> TABLE DES TYPES</a>
+			</div>
+			<div>
+				<a href="{{ path(currentRoute, currentParams|merge({'_locale': 'fr'})) }}">FR</a>
+				/
+				<a href="{{ path(currentRoute, currentParams|merge({'_locale': 'en'})) }}">EN</a>
+			</div>
+			
 		</nav>
+
+
 		{% block body %}{% endblock %}
 	</body>
 </html>

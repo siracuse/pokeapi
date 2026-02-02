@@ -68,18 +68,32 @@ final class MainController extends AbstractController
     }
 
     #[Route('/{_locale}/pokemon/{name}', name: 'pokemon', defaults:['_locale' => 'fr'])]
-    public function pokemon(Pokeapi $pokeapi, string $name) 
+    public function pokemon(Pokeapi $pokeapi, string $name, Request $request) 
     {
         
         $pokemon = $pokeapi->pokemonGetSingle($name);
-        
         if(isset($pokemon['error'])) {
             return $this->render('error.html.twig', [
                 'message' => $pokemon['message']
             ]);
         }
+
+        $form = $this->createForm(PokemonSearchType::class);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            $nameSearch = $data['search'];
+            $id = $pokeapi->nameFrtoEn($nameSearch);
+            if(!$id) {
+                return $this->render('error.html.twig', [
+                'message' => 'Pokémon introuvable'
+            ]);
+            }
+            return $this->redirectToRoute('pokemon', ['name' => $id]);
+        }
         return $this->render('main/pokemon.html.twig', [
-            'pokemon' => $pokemon
+            'pokemon' => $pokemon,
+            'form' => $form
         ]);
     }
 
@@ -116,4 +130,11 @@ final class MainController extends AbstractController
             'pokemon' => $pokemon
         ]);
     }
+
+    #[Route('/{_locale}/table_des_types', name: 'table_type', defaults:['_locale' => 'fr'])]
+    public function tableType() 
+    {
+        return $this->render('main/tableType.html.twig');
+    }
+
 }

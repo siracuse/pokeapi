@@ -1,11 +1,9 @@
-/* Reset minimal */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
-/* Base */
 body {
     font-family: Arial, Helvetica, sans-serif;
     background-color: #f5f6fa;
@@ -13,11 +11,18 @@ body {
     padding: 20px;
 }
 
-/* Liens */
 a {
     text-decoration: none;
     color: inherit;
 }
+footer {
+    height: 500px;
+}
+
+nav {
+    margin-bottom: 30px;
+}
+
 
 /* --------------------
    PAGE ACCUEIL
@@ -213,13 +218,7 @@ a {
     border-bottom: 1px solid lightgray;
     margin-bottom: 18px;
 }   
-footer {
-    height: 500px;
-}
 
-nav {
-    margin-bottom: 10px;
-}
 
 
 .pokemonForceFaiblesse {
@@ -229,6 +228,8 @@ nav {
 .pokemonTeambuild img{
     width: 260px;
 }
+
+
 
 @media all and (min-width: 1000px) {
     

@@ -8,6 +8,9 @@
 .justify-center {
     justify-content: center;
 }
+.justify-between {
+    justify-content: space-between;
+}
 .align-center {
     align-items: center;
 }
@@ -31,6 +34,9 @@
 .mt-40 {
     margin-top: 40px;
 }
+.mr-12 {
+    margin-right: 12px;
+}
 .mb-5 {
     margin-bottom: 5px;
 }
@@ -42,6 +48,12 @@
 }
 .mb-40 {
     margin-bottom: 40px;
+}
+.px-20 {
+    padding: 0 20px
+}
+.px-40 {
+    padding: 0 40px
 }
 
 /* COMPONENTS */
