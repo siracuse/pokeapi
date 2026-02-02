@@ -17,6 +17,14 @@
 			{% for type in pokemon.types %}
 				<div class="type {{ type }}">{{ type|trans({}, 'types') }}</div>
 			{% endfor %}
+
+		</div>
+		<div class="stat total">
+			<div class="stat-header">
+				<span>Somme des statistiques de base</span>
+				<span>=
+					{{ pokemon.stats_total }}</span>
+			</div>
 		</div>
 	</div>
 
