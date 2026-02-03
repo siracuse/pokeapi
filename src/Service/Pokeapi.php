@@ -79,7 +79,17 @@ class Pokeapi
                     }
                 }
 
-                // dd($multipliers);
+                // $data_talents = $pokemon['abilities'];
+                // $talents = [];
+                // foreach($data_talents as $talent) {
+                //     $ability_data = $this->client->request('GET', $talent['ability']['url'])->toArray();
+                //     foreach($ability_data['effect_entries'] as $effect_entry) {
+                //         dd($effect_entry);
+                //     }
+                //     dd($ability_data['effect_entries']);    
+                //     $talents[] = $ability_data;
+                // }
+                // dd($talents);
 
                 $content = [
                     'id' => $pokemon['id'],

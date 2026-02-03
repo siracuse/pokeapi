@@ -95,6 +95,6 @@
 .hover {
     transition: 0.3s all;
 }
-a:hover {
+.hover:hover {
     color: var(--pokemon-color-red-primary);
 }

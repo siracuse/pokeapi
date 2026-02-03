@@ -254,3 +254,11 @@ nav {
     }
 
 }
+
+@media all and (min-width: 1200px) {
+    
+    .pokemonTeambuild {
+        width: 700px;
+    }
+
+}

@@ -6,15 +6,17 @@
 {% block body %}
 
 
-	<div class="px-40">
+	<div class="px-40 mt-40">
 		{{ form_start(form) }}
 
 		{% for i in 1..6 %}
-			<div class="teambuildForm">
-				{{ form_row(attribute(form, 'name' ~ i)) }}
-			</div>
+			<div>
 
-			<div class="pokemonWidget pokemonTeambuild mb-20 width-fit" id="teambuildPokemon-{{ i }}">
+				<div class="teambuildForm">
+					{{ form_row(attribute(form, 'name' ~ i)) }}
+				</div>
+
+				<div class="pokemonWidget pokemonTeambuild mb-20 width-fit" id="teambuildPokemon-{{ i }}"></div>
 			</div>
 		{% endfor %}
 
@@ -24,19 +26,17 @@
 	<script>
 		const pokemonUrlTemplate = "{{ path('teambuild_pokemon', {'_locale': app.request.locale,'name': 'POKEMON_NAME'}) }}";
 
-        document.querySelectorAll('.teambuildForm input[type="text"]').forEach((input, index) => {
-            input.addEventListener('blur', async function () {
-                if (!this.value) return;
+		document.querySelectorAll('.teambuildForm input[type="text"]').forEach((input, index) => {
+			input.addEventListener('blur', async function () {
+				if (!this.value) return;
 
-                const response = await fetch(pokemonUrlTemplate.replace('POKEMON_NAME', this.value));
-                const pokemon = await response.text();
+				const response = await fetch(pokemonUrlTemplate.replace('POKEMON_NAME', this.value));
+				const pokemon = await response.text();
 
-                document.getElementById (`teambuildPokemon-${index + 1}`).innerHTML = pokemon;
-                // document.querySelectorAll('.teambuildForm')[index].style.display = 'none';
-            });
-        });  
-
-
+				document.getElementById (`teambuildPokemon-${index + 1}`).innerHTML = pokemon;
+				// document.querySelectorAll('.teambuildForm')[index].style.display = 'none';
+			});
+		});
 	</script>
 
 {% endblock %}
