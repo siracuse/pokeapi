@@ -37,7 +37,7 @@
 				{% if pokemon.damage.immunities %}
 					<div>
 						<div class="bold titleForceFaiblesse">Immunité(s) :</div>
-						<div class="flex">
+						<div class="flex gap-10 align-center">
 							{% for immunity in pokemon.damage.immunities %}
 								<div class="type {{ immunity }}">{{ immunity|trans({}, 'types') }}</div>
 							{% endfor %}

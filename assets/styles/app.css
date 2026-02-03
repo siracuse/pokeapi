@@ -229,6 +229,9 @@ nav {
     width: 260px;
 }
 
+.teambuildForm div {
+    margin-bottom: 10px;
+}
 
 
 @media all and (min-width: 1000px) {

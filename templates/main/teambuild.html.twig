@@ -6,17 +6,20 @@
 {% block body %}
 
 
-	{{ form_start(form) }}
+	<div class="px-40">
+		{{ form_start(form) }}
 
-	{% for i in 1..6 %}
-		<div class="teambuildForm">
-			{{ form_row(attribute(form, 'name' ~ i)) }}
-		</div>
+		{% for i in 1..6 %}
+			<div class="teambuildForm">
+				{{ form_row(attribute(form, 'name' ~ i)) }}
+			</div>
 
-		<div class="pokemonWidget pokemonTeambuild mb-20 width-fit" id="teambuildPokemon-{{ i }}"></div>
-	{% endfor %}
+			<div class="pokemonWidget pokemonTeambuild mb-20 width-fit" id="teambuildPokemon-{{ i }}">
+			</div>
+		{% endfor %}
 
-	{{ form_end(form) }}
+		{{ form_end(form) }}
+	</div>
 
 	<script>
 		const pokemonUrlTemplate = "{{ path('teambuild_pokemon', {'_locale': app.request.locale,'name': 'POKEMON_NAME'}) }}";
@@ -29,7 +32,7 @@
                 const pokemon = await response.text();
 
                 document.getElementById (`teambuildPokemon-${index + 1}`).innerHTML = pokemon;
-                document.querySelectorAll('.teambuildForm')[index].style.display = 'none';
+                // document.querySelectorAll('.teambuildForm')[index].style.display = 'none';
             });
         });  
 
