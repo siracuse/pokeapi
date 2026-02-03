@@ -12,7 +12,7 @@
 		<div class="pokemonWidget pokemonDetail">
 			<div class="flex justify-center align-center gap-10 mb-10">
 				<div>#{{ pokemon.id }}</div>
-				<h1>{{pokemon.name|trans({}, 'pokemon')|capitalize}}</h1>
+				<h1><a href="https://www.pokepedia.fr/{{pokemon.name|trans({}, 'pokemon')}}" target="_blank" class="a-hover hover">{{pokemon.name|trans({}, 'pokemon')|capitalize}}</a></h1>
 			</div>
 			{% if app.request.locale == "en" %}
 				<h3>{{pokemon.name|trans({}, 'pokemon', 'fr')|capitalize}}</h3>

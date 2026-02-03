@@ -92,3 +92,9 @@
 .width-fit {
     width: fit-content;
 }
+.hover {
+    transition: 0.3s all;
+}
+a:hover {
+    color: var(--pokemon-color-red-primary);
+}

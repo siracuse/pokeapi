@@ -3,11 +3,20 @@
     margin: 0;
     padding: 0;
 }
+:root {
+    --pokemon-color-red-primary : #FF0000;
+    --pokemon-color-red-second : #CC0000;
+    --pokemon-color-blue-primary : #3B4CCA;
+    --pokemon-color-yellow-primary :  #FFDE00;
+    --pokemon-color-yellow-secondary : #B3A125;
+    --bg-color: #f5f6fa;
+    --font-color: #2f3640
+}
 
 body {
     font-family: Arial, Helvetica, sans-serif;
-    background-color: #f5f6fa;
-    color: #2f3640;
+    background-color: var(--bg-color);
+    color: var(--font-color);
     padding: 20px;
 }
 
@@ -22,6 +31,7 @@ footer {
 nav {
     margin-bottom: 30px;
 }
+
 
 
 /* --------------------
