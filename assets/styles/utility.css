@@ -17,6 +17,9 @@
 .align-center {
     align-items: center;
 }
+.gap-3 {
+    gap: 3px;
+}
 .gap-10 {
     gap: 10px;
 }
@@ -33,6 +36,15 @@
 /* MARGIN - PADDING*/
 .my-20 {
     margin: 20px 0;
+}
+.mt-10 {
+    margin-top: 10px;
+}
+.mt-20 {
+    margin-top: 20px;
+}
+.mt-30 {
+    margin-top: 30px;
 }
 .mt-40 {
     margin-top: 40px;
@@ -62,23 +74,10 @@
     padding: 0 40px
 }
 
-/* COMPONENTS */
-.btn-primary {
-    padding: 0.6rem 1rem;
-    background-color: #30a7d7;
-    border-radius: 6px;
-    color: white;
-    font-size: 1rem;
-    margin: 10px 0;
-    border: none;
-    cursor: pointer;
-}
-
 /* OTHER */
 .text-center {
     text-align: center;
 }
-
 .img {
   width: 100%;
   height: auto;
@@ -97,4 +96,8 @@
 }
 .hover:hover {
     color: var(--pokemon-color-red-primary);
+}
+.border-bottom-title {
+    border-bottom: 1px solid lightgray;
+    margin-bottom: 12px;
 }

@@ -8,7 +8,7 @@
 		{{form(form)}}
 	</div>
 
-	<div class="flex gap-20">
+	<div class="flex gap-20 flex-wrap container">
 		<div class="pokemonWidget pokemonDetail">
 			<div class="flex justify-center align-center gap-10 mb-10">
 				<div>#{{ pokemon.id }}</div>
@@ -30,14 +30,29 @@
 			</div>
 
 			{# <div class="infos">
-				<div>{{'Height'|trans}}
-					:
-					{{pokemon.height}}m</div>
-				<div>{{'Weight'|trans}}
-					:
-					{{pokemon.weight}}kg</div>
+				<div>{{'Height'|trans}} : {{pokemon.height}}m</div>
+				<div>{{'Weight'|trans}} : {{pokemon.weight}}kg</div>
 			</div> #}
 
+			{# <div class="abilities mt-20 gap-3">
+				{% for ability in pokemon.abilities %}
+					<span class="ability-tooltip">
+						{{ ability.name.fr }}
+
+						<span class="tooltip-content">
+							{{ ability.description.fr }}
+						</span>
+					</span>
+				{% endfor %}
+			</div> #}
+			
+			
+
+
+		</div>
+
+		<div class="pokemonWidget pokemonStats">
+			<h2 class="mb-40">{{ 'Base Stats'|trans }}</h2>
 			<div class="stats">
 				{% for stat in pokemon.stats %}
 					{% set value = stat.base_stat %}
@@ -75,7 +90,6 @@
 
 
 			</div>
-
 		</div>
 
 		<div class="pokemonWidget pokemonForceFaiblesse">
@@ -140,6 +154,45 @@
 			{% else %}
 				<div>Pas d'information sur les résistances/faiblesses.</div>
 			{% endif %}
+		</div>
+
+		<div class="pokemonWidget pokemonAbilities">
+			<h2 class="mb-40">{{ 'Abilities'|trans }}</h2>
+			<div class="abilities">
+				{% for ability in pokemon.abilities %}
+					<div class="bold border-bottom-title mt-30">{{ ability.name.fr }} :</div>
+					<div class="mt-10">{{ ability.description.fr }}</div>
+				{% endfor %}
+			</div>
+		</div>
+
+		<div class="pokemonWidget">
+			{# {{dump(pokemon.evolutions)}} #}
+			{% macro renderEvolutionTree(evolutions) %}
+				<ul class="evolution-tree">
+					{% for evo in evolutions %}
+						<li>
+							<div class="evo-item">
+								<img src="{{ evo.sprite }}" alt="{{ evo.name }}" class="evo-sprite">
+								<span class="ability-tooltip">{{ evo.name }}
+									<span class="tooltip-content">
+										{% for key, value in evo.conditions %}
+											{% if value %}
+												<strong>{{ key|capitalize }}:</strong> {{ value }}<br>
+											{% endif %}
+										{% endfor %}
+									</span>
+								</span>
+							</div>
+
+							{% if evo.evolves_to is not empty %}
+								{{ _self.renderEvolutionTree(evo.evolves_to) }}
+							{% endif %}
+						</li>
+					{% endfor %}
+				</ul>
+			{% endmacro %}
+			{{ _self.renderEvolutionTree(pokemon.evolutions) }}
 		</div>
 
 	</div>
