@@ -204,10 +204,7 @@ class Pokeapi
     private function getPokemonEvolutionTree(array $pokemon): array
     {
         // Récupération de la species
-        $speciesResponse = $this->client->request(
-            'GET',
-            $pokemon['species']['url']
-        );
+        $speciesResponse = $this->client->request('GET',$pokemon['species']['url']);
         $species = $speciesResponse->toArray();
 
         if (!isset($species['evolution_chain']['url'])) {
@@ -215,24 +212,34 @@ class Pokeapi
         }
 
         // Récupération de la chaîne d’évolution
-        $evolutionResponse = $this->client->request(
-            'GET',
-            $species['evolution_chain']['url']
-        );
+        $evolutionResponse = $this->client->request('GET',$species['evolution_chain']['url']);
         $evolutionChain = $evolutionResponse->toArray();
 
         // Trouver le nœud correspondant au Pokémon courant
-        $startNode = $this->findEvolutionNode(
-            $evolutionChain['chain'],
-            $pokemon['name']
-        );
+        $startNode = $this->findEvolutionNode($evolutionChain['chain'],$pokemon['name']);
 
         if ($startNode === null) {
             return [];
         }
 
-        // Construire l’arbre complet à partir de ce nœud
-        return $this->buildEvolutionTree($startNode);
+        $evolvesTo = $this->buildEvolutionTree($startNode);
+
+        // 🚫 AUCUNE évolution → on n’affiche rien
+        if (empty($evolvesTo)) {
+            return [];
+        }
+
+        // 🔑 ON INCLUT LE POKÉMON COURANT
+        $pokemonId = $this->getPokemonIdFromSpecies($startNode['species']);
+
+        return [
+            [
+                'name' => $startNode['species']['name'],
+                'sprite' => "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/{$pokemonId}.png",
+                'conditions' => null, // pas de condition pour lui-même
+                'evolves_to' => $this->buildEvolutionTree($startNode),
+            ]
+        ];
     }
 
     private function findEvolutionNode(array $chain, string $pokemonName): ?array

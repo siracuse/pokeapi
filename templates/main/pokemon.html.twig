@@ -95,7 +95,7 @@
 		<div class="pokemonWidget pokemonForceFaiblesse">
 			<h2 class="mb-40">{{ 'Type effectiveness'|trans }}</h2>
 			{% if pokemon.damage is defined %}
-				<div class="flex gap-40 flex-column">
+				<div class="flex flex-column">
 					{% if pokemon.damage.immunities %}
 						<div>
 							<div class="bold titleForceFaiblesse">{{ 'Immune to'|trans }} :</div>
@@ -108,15 +108,15 @@
 					{% endif %}
 
 					{% if pokemon.damage.resistances or pokemon.damage.resistances %}
-						<div>
+						<div class="mt-20">
 							<div class="bold titleForceFaiblesse">{{ 'Resistant to'|trans }} :</div>
-							<div class="flex gap-10 mb-5 align-center">
+							<div class="flex gap-10 mb-5 align-center flex-wrap">
 								{% if pokemon.damage.strong_resistances %} <div class="bold">(x 0.25) :</div> {% endif %}
 								{% for strongResistance in pokemon.damage.strong_resistances %}
 									<div class="type {{ strongResistance }}">{{ strongResistance|trans({}, 'types') }}</div>
 								{% endfor %}
 							</div>
-							<div class="flex gap-10 align-center">
+							<div class="flex gap-10 align-center flex-wrap">
 								{% if pokemon.damage.resistances %} <div class="bold">(x 0.5) :</div> {% endif %}
 								{% for resistance in pokemon.damage.resistances %}
 									<div class="type {{ resistance }}">{{ resistance|trans({}, 'types') }}</div>
@@ -128,16 +128,16 @@
 
 
 					{% if pokemon.damage.weaknesses or pokemon.damage.strong_weaknesses %}
-						<div>
+						<div class="mt-20">
 							<div class="bold titleForceFaiblesse">{{ 'Weak to'|trans }} :</div>
-							<div class="flex gap-10 mb-5 align-center">
+							<div class="flex gap-10 mb-5 align-center flex-wrap">
 								{% if pokemon.damage.weaknesses %} <div class="bold">(x 2) :</div> {% endif %}
 								{% for weakness in pokemon.damage.weaknesses %}
 									<div class="type {{ weakness }}">{{ weakness|trans({}, 'types') }}</div>
 								{% endfor %}
 							</div>
 
-							<div class="flex gap-10 align-center">
+							<div class="flex gap-10 align-center flex-wrap">
 								{% if pokemon.damage.strong_weaknesses %} <div class="bold">(x 4) :</div> {% endif %}
 								{% for strongWeakness in pokemon.damage.strong_weaknesses %}
 									<div class="type {{ strongWeakness }}">{{ strongWeakness|trans({}, 'types') }}</div>
@@ -146,9 +146,9 @@
 						</div>
 					{% endif %}
 
-					{% if pokemon.damage.strong_weaknesses %}
+					{# {% if pokemon.damage.strong_weaknesses %}
 						<div></div>
-					{% endif %}
+					{% endif %} #}
 				</div>
 
 			{% else %}
@@ -166,35 +166,50 @@
 			</div>
 		</div>
 
-		<div class="pokemonWidget">
-			{# {{dump(pokemon.evolutions)}} #}
-			{% macro renderEvolutionTree(evolutions) %}
-				<ul class="evolution-tree">
-					{% for evo in evolutions %}
-						<li>
-							<div class="evo-item">
-								<img src="{{ evo.sprite }}" alt="{{ evo.name }}" class="evo-sprite">
-								<span class="ability-tooltip">{{ evo.name }}
-									<span class="tooltip-content">
-										{% for key, value in evo.conditions %}
-											{% if value %}
-												<strong>{{ key|capitalize }}:</strong> {{ value }}<br>
-											{% endif %}
-										{% endfor %}
-									</span>
-								</span>
-							</div>
 
-							{% if evo.evolves_to is not empty %}
-								{{ _self.renderEvolutionTree(evo.evolves_to) }}
-							{% endif %}
-						</li>
-					{% endfor %}
-				</ul>
-			{% endmacro %}
-			{{ _self.renderEvolutionTree(pokemon.evolutions) }}
-		</div>
 
+		{% if pokemon.evolutions %}
+		
+			<div class="pokemonWidget evolution-horizontal">
+
+				{% macro renderEvolution(evo) %}
+					<div class="evolution-row">
+						<div class="evo-item">
+							<img src="{{ evo.sprite }}" alt="{{ evo.name }}" class="evo-sprite">
+							<a class="evo-name hover" href="{{ path('pokemon', { name: evo.name }) }}" target="_blank">
+								{{ evo.name|trans({}, 'pokemon')|capitalize }}
+							</span>
+						</div>
+
+						{% if evo.evolves_to is not empty %}
+							{% for next in evo.evolves_to %}
+								<div class="evo-arrow">
+									→
+									{% if next.conditions %}
+										<div class="evo-conditions">
+											{% for key, value in next.conditions %}
+												{% if value %}
+													<span>{{ key|replace({'_':' '})|capitalize }} : {{ value }}</span>
+												{% endif %}
+											{% endfor %}
+										</div>
+									{% endif %}
+								</div>
+
+								{{ _self.renderEvolution(next) }}
+							{% endfor %}
+						{% endif %}
+					</div>
+				{% endmacro %}
+
+				{% for evolution in pokemon.evolutions %}
+					{{ _self.renderEvolution(evolution) }}
+				{% endfor %}
+
+			</div>
+		{% endif %}
+	
+	
 	</div>
 	{# <div class="mt-40 text-center"> #}
 		{# <a href="{{ path('index') }}" onclick="window.history.back(); return false;" class="btn-primary">{{'Back'|trans}}</a> #}
