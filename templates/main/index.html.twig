@@ -4,37 +4,38 @@
 {% endblock %}
 
 {% block body %}
+	
 	<div class="pokemonSearch">
 		{{form(form)}}
 	</div>
 
-	<div class="pokemonGrid" id="pokemonGrid">
+	<div class="pokemonGrid container" id="pokemonGrid">
 		{% include 'main/_pokemon_list.html.twig' with { pokemons: pokemons } %}
 	</div>
 
-	<div class="my-20 text-center">
+	<div class="my-40 text-center">
 		<button id="loadMoreBtn" data-offset="{{ limit }}" class="btn-primary">
 			{{ "Load more Pokémon"|trans }}
 		</button>
 	</div>
 
-	<footer>
-		<script>
-		document.getElementById('loadMoreBtn').addEventListener('click', async function () {
-			const btn = this;
-			let offset = parseInt(btn.dataset.offset);
 
-			btn.disabled = true;
-			const response = await fetch(`{{ path('load_more', {'_locale': app.request.locale}) }}?offset=${offset}`);
-			const html = await response.text();
+	<script>
+	document.getElementById('loadMoreBtn').addEventListener('click', async function () {
+		const btn = this;
+		let offset = parseInt(btn.dataset.offset);
 
-			    document
-				.getElementById('pokemonGrid')
-				.insertAdjacentHTML('beforeend', html);
+		btn.disabled = true;
+		const response = await fetch(`{{ path('load_more', {'_locale': app.request.locale}) }}?offset=${offset}`);
+		const html = await response.text();
 
-			btn.dataset.offset = offset + 10;
-			btn.disabled = false;
-		});
-		</script>
-	</footer>
+			document
+			.getElementById('pokemonGrid')
+			.insertAdjacentHTML('beforeend', html);
+
+		btn.dataset.offset = offset + 10;
+		btn.disabled = false;
+	});
+	</script>
+
 {% endblock %}

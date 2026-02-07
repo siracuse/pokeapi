@@ -26,6 +26,9 @@
 .gap-20 {
     gap: 20px;
 }
+.gap-28 {
+    gap: 28px;
+}
 .gap-40{
     gap: 40px;
 }
@@ -36,6 +39,9 @@
 /* MARGIN - PADDING*/
 .my-20 {
     margin: 20px 0;
+}
+.my-40 {
+    margin: 40px 0;
 }
 .mt-10 {
     margin-top: 10px;
@@ -49,8 +55,8 @@
 .mt-40 {
     margin-top: 40px;
 }
-.mr-12 {
-    margin-right: 12px;
+.mr-40 {
+    margin-right: 40px;
 }
 .mb-5 {
     margin-bottom: 5px;
@@ -60,6 +66,9 @@
 }
 .mb-20 {
     margin-bottom: 20px;
+}
+.mb-30 {
+    margin-bottom: 30px;
 }
 .mb-40 {
     margin-bottom: 40px;

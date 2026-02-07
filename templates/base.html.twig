@@ -15,16 +15,16 @@
 		{% endblock %}
 	</head>
 	<body>
-		<nav class="flex justify-between">
+		<nav class="flex justify-between container">
 			{% set currentRoute = app.request.attributes.get('_route') %}
 			{% set currentParams = app.request.attributes.get('_route_params') %}
-			<div class="px-40">
-				<a href="{{ path('index') }}" class="mr-12 hover">{{ "HOME"|trans }}</a>
-				<a href="{{ path('teambuild') }}" class="mr-12 hover">{{ "TEAM BUILD"|trans }}</a>
-				<a href="{{ path('table_type') }}" class="mr-12 hover">{{ "TYPE CHART"|trans }}</a>
-				<a href="{{ path('cobbleverse') }}" class="hover">COBBLEVERSE</a>
+			<div class="">
+				<a href="{{ path('index') }}" class="mr-40 hover">{{ "Pokedex"|trans }}</a>
+				<a href="{{ path('teambuild') }}" class="mr-40 hover">{{ "Team build"|trans }}</a>
+				<a href="{{ path('table_type') }}" class="mr-40 hover">{{ "Type chart"|trans }}</a>
+				<a href="{{ path('cobbleverse') }}" class="hover">Cobbleverse</a>
 			</div>
-			<div class="px-40">
+			<div class="">
 				<a href="{{ path(currentRoute, currentParams|merge({'_locale': 'fr'})) }}" class="hover">FR</a>
 				/
 				<a href="{{ path(currentRoute, currentParams|merge({'_locale': 'en'})) }}" class="hover">EN</a>
