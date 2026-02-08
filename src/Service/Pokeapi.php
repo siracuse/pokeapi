@@ -130,6 +130,7 @@ class Pokeapi
                 $content = [
                     'id' => $pokemon['id'],
                     'sprite' => $pokemon['sprites']['other']['official-artwork']['front_default'],
+                    // 'spriteGif' => $pokemon['sprites']['versions']['generation-v']['black-white']['animated']['front_default'],
                     'name' => $pokemon['name'],
                     'height' => $pokemon['height'] * 0.1,
                     'weight' => $pokemon['weight'] * 0.1,

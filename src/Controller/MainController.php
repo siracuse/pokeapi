@@ -131,6 +131,26 @@ final class MainController extends AbstractController
         ]);
     }
 
+    #[Route('/{_locale}/teambuild/recap/{name}', name: 'teambuild_pokemon_recap', defaults:['_locale' => 'fr'])]
+    public function teambuildPokemonRecap(Pokeapi $pokeapi, string $name): JsonResponse
+    {
+        $id = $pokeapi->nameFrtoEn($name);
+        if (!$id) {
+            return $this->json(['error' => 'Pokémon introuvable'], 404);
+        }
+
+        $pokemon = $pokeapi->pokemonGetSingle($id);
+        if (isset($pokemon['error'])) {
+            return $this->json(['error' => $pokemon['message']], 404);
+        }
+
+        return $this->json([
+            'name' => ucfirst($pokemon['name']),
+            'sprite' => $pokemon['sprite'],
+            'types' => $pokemon['types'],
+        ]);
+    }
+
     #[Route('/{_locale}/table_des_types', name: 'table_type', defaults:['_locale' => 'fr'])]
     public function tableType() 
     {

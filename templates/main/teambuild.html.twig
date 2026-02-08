@@ -21,22 +21,60 @@
 
 		{{ form_end(form) }}
 
-		<div class="teambuildPokemonRecap">
+		<div class="mt-40 teambuildPokemonRecap">
 
 		</div>
 	</div>
 
 	<script>
 		const pokemonUrlTemplate = "{{ path('teambuild_pokemon', {'_locale': app.request.locale,'name': 'POKEMON_NAME'}) }}";
+		const pokemonRecapUrl = "{{ path('teambuild_pokemon_recap', {'_locale': app.request.locale,'name': 'POKEMON_NAME'}) }}";
+
+		const team = {};
+		const recapDiv = document.querySelector('.teambuildPokemonRecap');
+
+		function updateRecap() {
+			recapDiv.innerHTML = '';
+
+			Object.values(team).forEach(pokemon => {
+				const div = document.createElement('div');
+				div.classList.add('teambuildPokemonRecapUnit');
+
+				div.innerHTML = `
+
+					<img src="${pokemon.sprite}" alt="${pokemon.name}">
+					<div>${pokemon.name}</div>
+					<div class="types">
+						${pokemon.types.map(t => `<span class="type ${t}">${t}</span>`).join('')}
+					</div>
+
+				`;
+
+				recapDiv.appendChild(div);
+			});
+		}
 
 		document.querySelectorAll('.teambuildForm input[type="text"]').forEach((input, index) => {
 			input.addEventListener('blur', async function () {
 				if (!this.value) return;
 
-				const response = await fetch(pokemonUrlTemplate.replace('POKEMON_NAME', this.value));
-				const pokemon = await response.text();
+				// 1️⃣ Affichage détaillé (HTML)
+				const htmlResponse = await fetch(
+					pokemonUrlTemplate.replace('POKEMON_NAME', this.value)
+				);
+				const html = await htmlResponse.text();
+				document.getElementById(`teambuildPokemon-${index + 1}`).innerHTML = html;
 
-				document.getElementById (`teambuildPokemon-${index + 1}`).innerHTML = pokemon;
+				// 2️⃣ Récap (JSON)
+				const recapResponse = await fetch(
+					pokemonRecapUrl.replace('POKEMON_NAME', this.value)
+				);
+				if (!recapResponse.ok) return;
+
+				const recapData = await recapResponse.json();
+				team[index] = recapData;
+
+				updateRecap();
 			});
 		});
 	</script>
