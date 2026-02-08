@@ -6,8 +6,8 @@
 			{% block title %}
 			{% endblock %}
 		</title>
-		<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>"> {% block stylesheets %}{% endblock %}
-
+		{# <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>"> {% block stylesheets %}{% endblock %} #}
+		<link href="{{asset('images/pokeball.ico')}}" rel="shortcut icon" type="image/x-icon">
 		{% block javascripts %}
 			{% block importmap %}
 				{{ importmap('app') }}
@@ -19,7 +19,7 @@
 			{% set currentRoute = app.request.attributes.get('_route') %}
 			{% set currentParams = app.request.attributes.get('_route_params') %}
 			<div class="">
-				<a href="{{ path('index') }}" class="mr-40 hover">{{ "Pokedex"|trans }}</a>
+				<a href="{{ path('index') }}" class="mr-40 hover">{{ "Pokédex"|trans }}</a>
 				<a href="{{ path('teambuild') }}" class="mr-40 hover">{{ "Team build"|trans }}</a>
 				<a href="{{ path('table_type') }}" class="mr-40 hover">{{ "Type chart"|trans }}</a>
 				<a href="{{ path('cobbleverse') }}" class="hover">Cobbleverse</a>
