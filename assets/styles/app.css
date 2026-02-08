@@ -37,7 +37,7 @@ nav {
     margin-bottom: 30px;
 }
 
-
+footer {height: 100px;}
 
 /* --------------------
    COMPONENTS
@@ -360,6 +360,21 @@ dans le premier widget */
     margin-bottom: 10px;
 }
 
+.teambuildForm label {
+    width: 130px;
+}
+.teambuildForm input[type="text"] {
+    padding: 0.6rem 0.8rem;
+    font-size: 1rem;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    outline: none;
+    width: 250px;
+}
+
+.teambuildForm input[type="text"]:focus {
+    border-color: #ffcb05;
+}
 /* --------------------
    PAGE COBBLEVERSE
 -------------------- */

@@ -15,11 +15,15 @@
 					{{ form_row(attribute(form, 'name' ~ i)) }}
 				</div>
 
-				<div class="pokemonWidget pokemonTeambuild mb-20" id="teambuildPokemon-{{ i }}"></div>
+				<div class=" mb-20" id="teambuildPokemon-{{ i }}"></div>
 			</div>
 		{% endfor %}
 
 		{{ form_end(form) }}
+
+		<div class="teambuildPokemonRecap">
+
+		</div>
 	</div>
 
 	<script>
@@ -33,7 +37,6 @@
 				const pokemon = await response.text();
 
 				document.getElementById (`teambuildPokemon-${index + 1}`).innerHTML = pokemon;
-				// document.querySelectorAll('.teambuildForm')[index].style.display = 'none';
 			});
 		});
 	</script>
