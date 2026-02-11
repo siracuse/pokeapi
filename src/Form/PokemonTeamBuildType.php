@@ -19,10 +19,6 @@ class PokemonTeamBuildType extends AbstractType
             ->add('name4', TextType::class, ['required' => false, 'label' => false, 'attr' => ['placeholder' => '4ème pokémon']])
             ->add('name5', TextType::class, ['required' => false, 'label' => false, 'attr' => ['placeholder' => '5ème pokémon']])
             ->add('name6', TextType::class, ['required' => false, 'label' => false, 'attr' => ['placeholder' => '6ème pokémon']])
-            // ->add('name1', ChoiceType::class, [
-            //     'choices' => ['bulbizarre' => 1, 'salameche' => 4, 'carapuce' => 7],
-            //     'required' =>  false
-            // ])
         ;
     }
 

@@ -2,10 +2,8 @@
 
 namespace App\Service;
 
-use MultipleIterator;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 class Pokeapi
 {
@@ -25,126 +23,38 @@ class Pokeapi
     ) 
     {}
 
-    // Faire les vérifications au niveau du name --> teambuild
-    public function pokemonGetSingle(string $name): array
+    public function fetchPokemon(string $name): array
     {
-    return $this->cache->get('pokemon_' . strtolower($name), function($item) use ($name){
+        return $this->cache->get('pokemon_' . strtolower($name), function($item) use ($name){
             try {
                 $item->expiresAfter($this->pokemonCacheTtl);
                     
-                $pokemonResponse = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon/' . ($name));
+                $pokemonResponse = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon/' . $name);
                 $pokemon = $pokemonResponse->toArray();
-
-               // Récupération des stats    
-                $stats = array_map(
-                    fn($stat) => [
-                        'name' => $stat['stat']['name'],
-                        'base_stat' => $stat['base_stat'],
-                    ],
-                    $pokemon['stats']
-                );
-                $totalStats = array_sum(array_column($stats, 'base_stat'));
-
-                // Récupération des types
+  
+                $stats = $this->extractStats($pokemon);
+                $statsTotal = array_sum(array_column($stats, 'base_stat'));
                 $types = array_map(fn($type) => $type['type']['name'], $pokemon['types']);
 
-                // Calcul des résistances/faiblesses
-                $multipliers = [];
-                foreach ($types as $type) {
-                    $typeData = $this->client->request('GET', 'https://pokeapi.co/api/v2/type/' . $type)->toArray();
-                    $typeRelation = $typeData['damage_relations'];
-                    foreach ($typeRelation['double_damage_from'] as $t) {
-                        $multipliers[$t['name']] = ($multipliers[$t['name']] ?? 1) * 2;
-                    }
-                    foreach ($typeRelation['half_damage_from'] as $t) {
-                        $multipliers[$t['name']] = ($multipliers[$t['name']] ?? 1) * 0.5;
-                    }
-                    foreach ($typeRelation['no_damage_from'] as $t) {
-                        $multipliers[$t['name']] = ($multipliers[$t['name']] ?? 1) * 0;
-                    }
-                }
-                $immunities = $resistances = $strongResistances = $weaknesses = $strongWeaknesses = [];
-                foreach ($multipliers as $type => $multiplier) {
-                    if ($multiplier == 0) {
-                        $immunities[] = $type;
-                    } elseif ($multiplier == 0.25) {
-                        $strongResistances[] = $type;
-                    } elseif ($multiplier == 0.5) {
-                        $resistances[] = $type;
-                    } elseif ($multiplier == 2) {
-                        $weaknesses[] = $type;
-                    } elseif ($multiplier == 4) {
-                        $strongWeaknesses[] = $type;
-                    }
-                }
-
-                // Récupération de(s) talent(s)
-                $abilities = [];
-                foreach ($pokemon['abilities'] as $abilityData) {
-                    $abilityResponse = $this->client->request(
-                        'GET',
-                        $abilityData['ability']['url']
-                    );
-                    $ability = $abilityResponse->toArray();
-
-                    $nameFr = null;
-                    $nameEn = null;
-                    $descFr = null;
-                    $descEn = null;
-
-                    // Noms FR / EN
-                    foreach ($ability['names'] as $name) {
-                        if ($name['language']['name'] === 'fr') {
-                            $nameFr = $name['name'];
-                        }
-                        if ($name['language']['name'] === 'en') {
-                            $nameEn = $name['name'];
-                        }
-                    }
-
-                    // Descriptions FR / EN
-                    foreach ($ability['effect_entries'] as $entry) {
-                        if ($entry['language']['name'] === 'fr') {
-                            $descFr = $entry['short_effect'];
-                        }
-                        if ($entry['language']['name'] === 'en') {
-                            $descEn = $entry['short_effect'];
-                        }
-                    }
-
-                    $abilities[] = [
-                        'is_hidden' => $abilityData['is_hidden'],
-                        'name' => [
-                            'fr' => $nameFr,
-                            'en' => $nameEn,
-                        ],
-                        'description' => [
-                            'fr' => $descFr,
-                            'en' => $descEn,
-                        ],
-                    ];
-                }
-
-                $evolutions = $this->getPokemonEvolutionTree($pokemon);
+                $damages = $this->extractDamage($types);
+                $abilities = $this->extractAbilities($pokemon);
 
                 $content = [
                     'id' => $pokemon['id'],
                     'sprite' => $pokemon['sprites']['other']['official-artwork']['front_default'],
-                    // 'spriteGif' => $pokemon['sprites']['versions']['generation-v']['black-white']['animated']['front_default'],
                     'name' => $pokemon['name'],
                     'height' => $pokemon['height'] * 0.1,
                     'weight' => $pokemon['weight'] * 0.1,
                     'types' => $types,
                     'stats'  => $stats,
-                    'stats_total' => $totalStats,
+                    'statsTotal' => $statsTotal,
                     'abilities' => $abilities,  
-                    'evolutions' => $evolutions, 
                     'damage' => [
-                        'immunities' => $immunities,
-                        'resistances' => $resistances,
-                        'strong_resistances' => $strongResistances,
-                        'weaknesses' => $weaknesses,
-                        'strong_weaknesses' => $strongWeaknesses,
+                        'immunities' => $damages['immunities'],
+                        'resistances' => $damages['resistances'],
+                        'strongResistances' => $damages['strongResistances'],
+                        'weaknesses' => $damages['weaknesses'],
+                        'strongWeaknesses' => $damages['strongWeaknesses'],
                     ],                  
                 ];
                 return $content;
@@ -155,7 +65,7 @@ class Pokeapi
         });
     }
 
-    public function pokemonGetAll(int $limit, int $offset = 0): array
+    public function fetchPokemonList(int $limit, int $offset = 0): array
     {
         return $this->cache->get('pokemon_list_' . $limit . '_' . $offset, function($item) use ($limit, $offset) {
             try {
@@ -165,7 +75,6 @@ class Pokeapi
                 $pokemonList = $pokemonListResponse->toArray();
 
                 $pokemonResponses = [];
-                
                 foreach ($pokemonList['results'] as $pokemon) {
                     $pokemonResponses[] = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon/' . $pokemon['name']);
                 }   
@@ -173,7 +82,6 @@ class Pokeapi
                 $contents = [];
                 foreach ($pokemonResponses as $pokemonResponse) {
                     $pokemon = $pokemonResponse->toArray();
-                    
                     $contents[] = [
                         'sprite' => $pokemon['sprites']['other']['official-artwork']['front_default'],
                         'name'   => $pokemon['name'],
@@ -181,6 +89,7 @@ class Pokeapi
                     ];
                 }
                 return $contents;
+
             } catch (\Throwable) {
                 $item->expiresAfter(0);
                 return ['error' => true, 'message' => 'Impossible de récupérer les Pokémons pour le moment.'];
@@ -188,116 +97,109 @@ class Pokeapi
         });
     }
 
-    public function nameFrtoEn(string $nameSearch): ?int
+    public function extractStats(array $pokemon): array 
+    {
+        $stats = array_map(
+            fn($stat) => [
+                'name' => $stat['stat']['name'],
+                'base_stat' => $stat['base_stat'],
+            ],
+            $pokemon['stats']
+        );
+        return $stats;
+    }
+
+    public function extractDamage(array $types): array
+    {
+        $multipliers = [];
+        foreach ($types as $type) {
+            $typeData = $this->client->request('GET', 'https://pokeapi.co/api/v2/type/' . $type)->toArray();
+            $typeRelation = $typeData['damage_relations'];
+            foreach ($typeRelation['double_damage_from'] as $t) {
+                $multipliers[$t['name']] = ($multipliers[$t['name']] ?? 1) * 2;
+            }
+            foreach ($typeRelation['half_damage_from'] as $t) {
+                $multipliers[$t['name']] = ($multipliers[$t['name']] ?? 1) * 0.5;
+            }
+            foreach ($typeRelation['no_damage_from'] as $t) {
+                $multipliers[$t['name']] = ($multipliers[$t['name']] ?? 1) * 0;
+            }
+        }
+        $immunities = $resistances = $strongResistances = $weaknesses = $strongWeaknesses = [];
+        foreach ($multipliers as $type => $multiplier) {
+            if ($multiplier == 0) {
+                $immunities[] = $type;
+            } elseif ($multiplier == 0.25) {
+                $strongResistances[] = $type;
+            } elseif ($multiplier == 0.5) {
+                $resistances[] = $type;
+            } elseif ($multiplier == 2) {
+                $weaknesses[] = $type;
+            } elseif ($multiplier == 4) {
+                $strongWeaknesses[] = $type;
+            }
+        }
+        return [
+            'immunities' => $immunities, 
+            'resistances' => $resistances, 
+            'strongResistances' => $strongResistances, 
+            'weaknesses' => $weaknesses, 
+            'strongWeaknesses' => $strongWeaknesses
+        ];
+    }
+
+    public function extractAbilities(array $pokemon): array
+    {
+        foreach ($pokemon['abilities'] as $abilityData) {
+            $abilityResponse = $this->client->request('GET',$abilityData['ability']['url']);
+            $ability = $abilityResponse->toArray();
+
+            $nameFr = null;
+            $nameEn = null;
+            $descFr = null;
+            $descEn = null;
+
+            // Noms FR / EN
+            foreach ($ability['names'] as $name) {
+                if ($name['language']['name'] === 'fr') {
+                    $nameFr = $name['name'];
+                }
+                if ($name['language']['name'] === 'en') {
+                    $nameEn = $name['name'];
+                }
+            }
+
+            // Descriptions FR / EN
+            foreach ($ability['effect_entries'] as $entry) {
+                if ($entry['language']['name'] === 'fr') {
+                    $descFr = $entry['short_effect'];
+                }
+                if ($entry['language']['name'] === 'en') {
+                    $descEn = $entry['short_effect'];
+                }
+            }
+
+            $abilities[] = [
+                'is_hidden' => $abilityData['is_hidden'],
+                'name' => [
+                    'fr' => $nameFr,
+                    'en' => $nameEn,
+                ],
+                'description' => [
+                    'fr' => $descFr,
+                    'en' => $descEn,
+                ],
+            ];
+        }
+        return $abilities;
+    }
+
+    public function nameSearchToId(string $nameSearch): ?int
     {
         $name = strtolower($nameSearch);
         $accents = ['à','á','â','ã','ä','å','æ','ç','è','é','ê','ë','ì','í','î','ï','ñ','ò','ó','ô','õ','ö','ù','ú','û','ü','ý','ÿ'];
         $sans    = ['a','a','a','a','a','a','ae','c','e','e','e','e','i','i','i','i','n','o','o','o','o','o','u','u','u','u','y','y'];
         $name = str_replace($accents, $sans, $name);
         return $this->map[$name] ?? null;
-    }
-
-    public function pokemonStrengthWeakness()
-    {
-
-    }
-
-    private function getPokemonEvolutionTree(array $pokemon): array
-    {
-        // Récupération de la species
-        $speciesResponse = $this->client->request('GET',$pokemon['species']['url']);
-        $species = $speciesResponse->toArray();
-
-        if (!isset($species['evolution_chain']['url'])) {
-            return [];
-        }
-
-        // Récupération de la chaîne d’évolution
-        $evolutionResponse = $this->client->request('GET',$species['evolution_chain']['url']);
-        $evolutionChain = $evolutionResponse->toArray();
-
-        // Trouver le nœud correspondant au Pokémon courant
-        $startNode = $this->findEvolutionNode($evolutionChain['chain'],$pokemon['name']);
-
-        if ($startNode === null) {
-            return [];
-        }
-
-        $evolvesTo = $this->buildEvolutionTree($startNode);
-
-        // 🚫 AUCUNE évolution → on n’affiche rien
-        if (empty($evolvesTo)) {
-            return [];
-        }
-
-        // 🔑 ON INCLUT LE POKÉMON COURANT
-        $pokemonId = $this->getPokemonIdFromSpecies($startNode['species']);
-
-        return [
-            [
-                'name' => $startNode['species']['name'],
-                'sprite' => "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/{$pokemonId}.png",
-                'conditions' => null, // pas de condition pour lui-même
-                'evolves_to' => $this->buildEvolutionTree($startNode),
-            ]
-        ];
-    }
-
-    private function findEvolutionNode(array $chain, string $pokemonName): ?array
-    {
-        if ($chain['species']['name'] === strtolower($pokemonName)) {
-            return $chain;
-        }
-
-        foreach ($chain['evolves_to'] as $evolution) {
-            $result = $this->findEvolutionNode($evolution, $pokemonName);
-            if ($result !== null) {
-                return $result;
-            }
-        }
-
-        return null;
-    }
-    private function getPokemonIdFromSpecies(array $species): int
-    {
-        $url = $species['url'];
-        $parts = explode('/', rtrim($url, '/')); // supprime le slash final
-        return (int) end($parts); // retourne le dernier élément = ID
-    }
-
-    private function buildEvolutionTree(array $chain): array
-    {
-        $tree = [];
-
-        foreach ($chain['evolves_to'] as $evolution) {
-            
-            $pokemonId = $this->getPokemonIdFromSpecies($evolution['species']);
-            $tree[] = [
-                'name' => $evolution['species']['name'],
-                'sprite' => "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/" . $pokemonId . ".png",
-                'conditions' => $this->extractEvolutionConditions($evolution),
-                'evolves_to' => $this->buildEvolutionTree($evolution),
-            ];
-        }
-
-        return $tree;
-    }
-
-    private function extractEvolutionConditions(array $evolution): array
-    {
-        $details = $evolution['evolution_details'][0] ?? [];
-
-        return [
-            'trigger' => $details['trigger']['name'] ?? null,
-            'min_level' => $details['min_level'] ?? null,
-            'item' => $details['item']['name'] ?? null,
-            'held_item' => $details['held_item']['name'] ?? null,
-            'time_of_day' => $details['time_of_day'] ?: null,
-            'known_move' => $details['known_move']['name'] ?? null,
-            'min_happiness' => $details['min_happiness'] ?? null,
-            'min_affection' => $details['min_affection'] ?? null,
-            'needs_overworld_rain' => $details['needs_overworld_rain'] ?? false,
-            'turn_upside_down' => $details['turn_upside_down'] ?? false,
-        ];
     }
 }

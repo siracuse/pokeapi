@@ -18,8 +18,7 @@ final class MainController extends AbstractController
     {
         $limit = 10;
         $offset = 0;
-
-        $pokemons = $pokeapi->pokemonGetAll($limit, $offset);
+        $pokemons = $pokeapi->fetchPokemonList($limit, $offset);
         
         if(isset($pokemons['error'])) {
             return $this->render('error.html.twig', [
@@ -32,7 +31,7 @@ final class MainController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $nameSearch = $data['search'];
-            $id = $pokeapi->nameFrtoEn($nameSearch);
+            $id = $pokeapi->nameSearchToId($nameSearch);
             if(!$id) {
                 return $this->render('error.html.twig', [
                 'message' => 'Pokémon introuvable'
@@ -49,12 +48,13 @@ final class MainController extends AbstractController
         ]);
     }
 
+    // Route ajax pour le load more
     #[Route('/{_locale}/load-more', name: 'load_more', methods: ['GET'])]
     public function loadMore(Pokeapi $pokeapi, Request $request): Response
     {
         $limit = 10;
         $offset = $request->query->getInt('offset', 0);
-        $pokemons = $pokeapi->pokemonGetAll($limit, $offset);
+        $pokemons = $pokeapi->fetchPokemonList($limit, $offset);
         
         if(isset($pokemons['error'])) {
             return $this->render('error.html.twig', [
@@ -71,7 +71,7 @@ final class MainController extends AbstractController
     public function pokemon(Pokeapi $pokeapi, string $name, Request $request) 
     {
         
-        $pokemon = $pokeapi->pokemonGetSingle($name);
+        $pokemon = $pokeapi->fetchPokemon($name);
         if(isset($pokemon['error'])) {
             return $this->render('error.html.twig', [
                 'message' => $pokemon['message']
@@ -83,7 +83,7 @@ final class MainController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $nameSearch = $data['search'];
-            $id = $pokeapi->nameFrtoEn($nameSearch);
+            $id = $pokeapi->nameSearchToId($nameSearch);
             if(!$id) {
                 return $this->render('error.html.twig', [
                 'message' => 'Pokémon introuvable'
@@ -97,9 +97,6 @@ final class MainController extends AbstractController
         ]);
     }
 
-
-
-    // ROUTE POUR LE TEAM BUILD
     #[Route('/{_locale}/teambuild', name: 'teambuild', defaults:['_locale' => 'fr'])]
     public function teambuild() 
     {
@@ -110,17 +107,17 @@ final class MainController extends AbstractController
         ]);
     }
 
-    // ROUTE AJAX
+    // 1er ROUTE AJAX Pour la team build
     #[Route('/{_locale}/teambuild/pokemon/{name}', name: 'teambuild_pokemon', defaults:['_locale' => 'fr'])]
     public function teambuildPokemon(Pokeapi $pokeapi, string $name) 
     {       
-        $id = $pokeapi->nameFrtoEn($name);
+        $id = $pokeapi->nameSearchToId($name);
         if(!$id) {
             return $this->render('error.html.twig', [
                 'message' => 'Pokémon introuvable'
             ]);
         }       
-        $pokemon = $pokeapi->pokemonGetSingle($id); 
+        $pokemon = $pokeapi->fetchPokemon($id); 
         if(isset($pokemon['error'])) {
             return $this->render('error.html.twig', [
                 'message' => $pokemon['message']
@@ -131,15 +128,16 @@ final class MainController extends AbstractController
         ]);
     }
 
+    // 2eme ROUTE AJAX Pour la team build
     #[Route('/{_locale}/teambuild/recap/{name}', name: 'teambuild_pokemon_recap', defaults:['_locale' => 'fr'])]
     public function teambuildPokemonRecap(Pokeapi $pokeapi, string $name): JsonResponse
     {
-        $id = $pokeapi->nameFrtoEn($name);
+        $id = $pokeapi->nameSearchToId($name);
         if (!$id) {
             return $this->json(['error' => 'Pokémon introuvable'], 404);
         }
 
-        $pokemon = $pokeapi->pokemonGetSingle($id);
+        $pokemon = $pokeapi->fetchPokemon($id);
         if (isset($pokemon['error'])) {
             return $this->json(['error' => $pokemon['message']], 404);
         }

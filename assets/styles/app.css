@@ -111,7 +111,6 @@ footer {height: 100px;}
 .pokemonSearch input[type="submit"]:hover {
     background-color: #d32f2f;
 }
-/* BOUTON */
 .btn-primary {
     padding: 0.6rem 1rem;
     background-color: #30a7d7;
@@ -246,108 +245,6 @@ footer {height: 100px;}
     height: fit-content;
 }
 
-/* CODE CSS pour talent juste en dessous des types
-dans le premier widget */
-/* .abilities {
-    display: flex;
-    flex-direction: column;
-}
-.ability-tooltip {
-    position: relative;
-    display: inline-block;
-    margin-right: 10px;
-    cursor: help;
-    font-weight: bold;
-}
-
-.tooltip-content {
-    position: absolute;
-    bottom: 125%;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #1f2937; 
-    color: #fff;
-    padding: 8px 10px;
-    border-radius: 6px;
-    font-size: 0.85rem;
-    width: max-content;
-    max-width: 220px;
-    text-align: center;
-
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.2s ease;
-    z-index: 10;
-}
-.tooltip-content::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border-width: 6px;
-    border-style: solid;
-    border-color: #1f2937 transparent transparent transparent;
-}
-.ability-tooltip:hover .tooltip-content {
-    opacity: 1;
-    visibility: visible;
-} */
-
-
-.evolution-horizontal {
-    display: flex;
-    justify-content: center;
-    margin-top: 24px;
-}
-
-.evolution-row {
-    display: flex;
-    align-items: center;
-}
-
-.evo-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background: #f6f6f6;
-    border-radius: 12px;
-    padding: 12px;
-    min-width: 120px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-.evo-sprite {
-    width: 96px;
-    height: 96px;
-}
-
-.evo-name {
-    margin-top: 6px;
-    font-weight: bold;
-    text-transform: capitalize;
-}
-
-.evo-arrow {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 0 20px;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.evo-conditions {
-    font-size: 12px;
-    color: #555;
-    margin-top: 4px;
-    text-align: center;
-}
-
-.evo-conditions span {
-    display: block;
-}
-
 
 /* --------------------
    TEAM BUILD
@@ -390,6 +287,7 @@ dans le premier widget */
 .teambuildPokemonRecap img {
     width: 90px;
 }
+
 /* --------------------
    PAGE COBBLEVERSE
 -------------------- */
@@ -437,4 +335,3 @@ dans le premier widget */
     }
 
 }
-
