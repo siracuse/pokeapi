@@ -23,6 +23,12 @@ class Pokeapi
     ) 
     {}
 
+    /**
+     * Récupère un Pokémon et ses informations enrichies.
+     *
+     * @param string $name Nom en anglais ou l'id
+     * @return array
+     */
     public function fetchPokemon(string $name): array
     {
         return $this->cache->get('pokemon_' . strtolower($name), function($item) use ($name){
@@ -65,6 +71,13 @@ class Pokeapi
         });
     }
 
+    /**
+     * Récupère une liste de Pokémon et certaines informations.
+     *
+    * @param int $limit  Nombre de Pokémon à récupérer
+    * @param int $offset Décalage pour la pagination (par défaut 0)
+     * @return array
+     */
     public function fetchPokemonList(int $limit, int $offset = 0): array
     {
         return $this->cache->get('pokemon_list_' . $limit . '_' . $offset, function($item) use ($limit, $offset) {
@@ -97,7 +110,7 @@ class Pokeapi
         });
     }
 
-    public function extractStats(array $pokemon): array 
+    private function extractStats(array $pokemon): array 
     {
         $stats = array_map(
             fn($stat) => [
@@ -109,7 +122,7 @@ class Pokeapi
         return $stats;
     }
 
-    public function extractDamage(array $types): array
+    private function extractDamage(array $types): array
     {
         $multipliers = [];
         foreach ($types as $type) {
@@ -148,7 +161,7 @@ class Pokeapi
         ];
     }
 
-    public function extractAbilities(array $pokemon): array
+    private function extractAbilities(array $pokemon): array
     {
         foreach ($pokemon['abilities'] as $abilityData) {
             $abilityResponse = $this->client->request('GET',$abilityData['ability']['url']);
@@ -158,8 +171,6 @@ class Pokeapi
             $nameEn = null;
             $descFr = null;
             $descEn = null;
-
-            // Noms FR / EN
             foreach ($ability['names'] as $name) {
                 if ($name['language']['name'] === 'fr') {
                     $nameFr = $name['name'];
@@ -168,8 +179,6 @@ class Pokeapi
                     $nameEn = $name['name'];
                 }
             }
-
-            // Descriptions FR / EN
             foreach ($ability['effect_entries'] as $entry) {
                 if ($entry['language']['name'] === 'fr') {
                     $descFr = $entry['short_effect'];
@@ -178,7 +187,6 @@ class Pokeapi
                     $descEn = $entry['short_effect'];
                 }
             }
-
             $abilities[] = [
                 'is_hidden' => $abilityData['is_hidden'],
                 'name' => [
