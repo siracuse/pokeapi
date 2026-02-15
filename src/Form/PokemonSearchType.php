@@ -16,12 +16,12 @@ class PokemonSearchType extends AbstractType
             ->add('search', TypeTextType::class, [
                 'label' => false,
                 'attr' => [
-                    'placeholder' => 'Name'
-                ]
+                    'placeholder' => 'Name',
+                ],
             ])
             ->add('submit', SubmitType::class, [
-                'label' => 'Search'
-            ]);;
+                'label' => 'Search',
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

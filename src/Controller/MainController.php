@@ -13,16 +13,16 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class MainController extends AbstractController
 {
-    #[Route('/{_locale}', name: 'index', defaults:['_locale' => 'fr'])]
-    public function index(Pokeapi $pokeapi, Request $request) 
+    #[Route('/{_locale}', name: 'index', defaults: ['_locale' => 'fr'])]
+    public function index(Pokeapi $pokeapi, Request $request)
     {
         $limit = 10;
         $offset = 0;
         $pokemons = $pokeapi->fetchPokemonList($limit, $offset);
-        
-        if(isset($pokemons['error'])) {
+
+        if (isset($pokemons['error'])) {
             return $this->render('error.html.twig', [
-                'message' => $pokemons['message']
+                'message' => $pokemons['message'],
             ]);
         }
 
@@ -32,19 +32,20 @@ final class MainController extends AbstractController
             $data = $form->getData();
             $nameSearch = $data['search'];
             $id = $pokeapi->nameSearchToId($nameSearch);
-            if(!$id) {
+            if (!$id) {
                 return $this->render('error.html.twig', [
-                'message' => 'Pokémon introuvable'
-            ]);
+                    'message' => 'Pokémon introuvable',
+                ]);
             }
+
             return $this->redirectToRoute('pokemon', ['name' => $id]);
         }
-        
+
         return $this->render('main/index.html.twig', [
             'pokemons' => $pokemons,
             'form' => $form,
             'limit' => $limit,
-            'offset' => $offset
+            'offset' => $offset,
         ]);
     }
 
@@ -55,10 +56,10 @@ final class MainController extends AbstractController
         $limit = 10;
         $offset = $request->query->getInt('offset', 0);
         $pokemons = $pokeapi->fetchPokemonList($limit, $offset);
-        
-        if(isset($pokemons['error'])) {
+
+        if (isset($pokemons['error'])) {
             return $this->render('error.html.twig', [
-                'message' => $pokemons['message']
+                'message' => $pokemons['message'],
             ]);
         }
 
@@ -67,14 +68,13 @@ final class MainController extends AbstractController
         ]);
     }
 
-    #[Route('/{_locale}/pokemon/{name}', name: 'pokemon', defaults:['_locale' => 'fr'])]
-    public function pokemon(Pokeapi $pokeapi, string $name, Request $request) 
+    #[Route('/{_locale}/pokemon/{name}', name: 'pokemon', defaults: ['_locale' => 'fr'])]
+    public function pokemon(Pokeapi $pokeapi, string $name, Request $request)
     {
-        
         $pokemon = $pokeapi->fetchPokemon($name);
-        if(isset($pokemon['error'])) {
+        if (isset($pokemon['error'])) {
             return $this->render('error.html.twig', [
-                'message' => $pokemon['message']
+                'message' => $pokemon['message'],
             ]);
         }
 
@@ -84,52 +84,55 @@ final class MainController extends AbstractController
             $data = $form->getData();
             $nameSearch = $data['search'];
             $id = $pokeapi->nameSearchToId($nameSearch);
-            if(!$id) {
+            if (!$id) {
                 return $this->render('error.html.twig', [
-                'message' => 'Pokémon introuvable'
-            ]);
+                    'message' => 'Pokémon introuvable',
+                ]);
             }
+
             return $this->redirectToRoute('pokemon', ['name' => $id]);
         }
+
         return $this->render('main/pokemon.html.twig', [
             'pokemon' => $pokemon,
-            'form' => $form
+            'form' => $form,
         ]);
     }
 
-    #[Route('/{_locale}/teambuild', name: 'teambuild', defaults:['_locale' => 'fr'])]
-    public function teambuild() 
+    #[Route('/{_locale}/teambuild', name: 'teambuild', defaults: ['_locale' => 'fr'])]
+    public function teambuild()
     {
         $form = $this->createForm(PokemonTeamBuildType::class);
 
         return $this->render('main/teambuild.html.twig', [
-            'form' => $form
+            'form' => $form,
         ]);
     }
 
     // 1er ROUTE AJAX Pour la team build
-    #[Route('/{_locale}/teambuild/pokemon/{name}', name: 'teambuild_pokemon', defaults:['_locale' => 'fr'])]
-    public function teambuildPokemon(Pokeapi $pokeapi, string $name) 
-    {       
+    #[Route('/{_locale}/teambuild/pokemon/{name}', name: 'teambuild_pokemon', defaults: ['_locale' => 'fr'])]
+    public function teambuildPokemon(Pokeapi $pokeapi, string $name)
+    {
         $id = $pokeapi->nameSearchToId($name);
-        if(!$id) {
+        if (!$id) {
             return $this->render('error.html.twig', [
-                'message' => 'Pokémon introuvable'
-            ]);
-        }       
-        $pokemon = $pokeapi->fetchPokemon($id); 
-        if(isset($pokemon['error'])) {
-            return $this->render('error.html.twig', [
-                'message' => $pokemon['message']
+                'message' => 'Pokémon introuvable',
             ]);
         }
+        $pokemon = $pokeapi->fetchPokemon($id);
+        if (isset($pokemon['error'])) {
+            return $this->render('error.html.twig', [
+                'message' => $pokemon['message'],
+            ]);
+        }
+
         return $this->render('main/_teambuildPokemon.html.twig', [
-            'pokemon' => $pokemon
+            'pokemon' => $pokemon,
         ]);
     }
 
     // 2eme ROUTE AJAX Pour la team build
-    #[Route('/{_locale}/teambuild/recap/{name}', name: 'teambuild_pokemon_recap', defaults:['_locale' => 'fr'])]
+    #[Route('/{_locale}/teambuild/recap/{name}', name: 'teambuild_pokemon_recap', defaults: ['_locale' => 'fr'])]
     public function teambuildPokemonRecap(Pokeapi $pokeapi, string $name): JsonResponse
     {
         $id = $pokeapi->nameSearchToId($name);
@@ -149,16 +152,15 @@ final class MainController extends AbstractController
         ]);
     }
 
-    #[Route('/{_locale}/table_des_types', name: 'table_type', defaults:['_locale' => 'fr'])]
-    public function tableType() 
+    #[Route('/{_locale}/table_des_types', name: 'table_type', defaults: ['_locale' => 'fr'])]
+    public function tableType()
     {
         return $this->render('main/tableType.html.twig');
     }
 
-    #[Route('/{_locale}/cobbleverse', name: 'cobbleverse', defaults:['_locale' => 'fr'])]
-    public function cobbleverse() 
+    #[Route('/{_locale}/cobbleverse', name: 'cobbleverse', defaults: ['_locale' => 'fr'])]
+    public function cobbleverse()
     {
         return $this->render('main/cobbleverse.html.twig');
     }
-
 }
