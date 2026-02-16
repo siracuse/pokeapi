@@ -13,7 +13,7 @@ J'ai créé ce projet à la fois pour **m'entraîner et approfondir mes connaiss
 - PHP 8.2
 - Symfony 7
 - JS
-- API externe : PokéApi
+- API externe : PokéAPI
 - Qualité de code : php-cs-fixer
 
 
