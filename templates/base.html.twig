@@ -6,7 +6,7 @@
 			{% block title %}
 			{% endblock %}
 		</title>
-		<link href="{{asset('images/pokeball.ico')}}" rel="shortcut icon" type="image/x-icon">
+		<link rel="icon" href="{{asset('images/pokeball.ico')}}" >
 		{% block javascripts %}
 			{% block importmap %}
 				{{ importmap('app') }}
@@ -15,8 +15,8 @@
 	</head>
 	<body>
 		<nav class="flex justify-between container">
-			{% set currentRoute = app.request.attributes.get('_route') %}
-			{% set currentParams = app.request.attributes.get('_route_params') %}
+			{% set current_route = app.request.get('_route') %}
+			{% set current_params = app.request.get('_route_params') %}
 			<div class="">
 				<a href="{{ path('index') }}" class="mr-40 hover">{{ "Pokédex"|trans }}</a>
 				<a href="{{ path('teambuild') }}" class="mr-40 hover">{{ "Team build"|trans }}</a>
@@ -24,9 +24,9 @@
 				<a href="{{ path('cobbleverse') }}" class="hover">Cobbleverse</a>
 			</div>
 			<div class="">
-				<a href="{{ path(currentRoute, currentParams|merge({'_locale': 'fr'})) }}" class="hover">FR</a>
+				<a href="{{ path(current_route, current_params|merge({'_locale': 'fr'})) }}" class="hover">FR</a>
 				/
-				<a href="{{ path(currentRoute, currentParams|merge({'_locale': 'en'})) }}" class="hover">EN</a>
+				<a href="{{ path(current_route, current_params|merge({'_locale': 'en'})) }}" class="hover">EN</a>
 			</div>
 			
 		</nav>

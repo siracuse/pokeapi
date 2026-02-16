@@ -86,7 +86,7 @@
 						</div>
 					{% endif %}
 
-					{% if pokemon.damage.resistances or pokemon.damage.resistances %}
+					{% if pokemon.damage.resistances or pokemon.damage.strongResistances %}
 						<div class="mt-20">
 							<div class="bold titleForceFaiblesse">{{ 'Resistant to'|trans }} :</div>
 							<div class="flex gap-10 mb-5 align-center flex-wrap">
@@ -105,7 +105,7 @@
 						</div>
 					{% endif %}
 
-					{% if pokemon.damage.weaknesses or pokemon.damage.strong_weaknesses %}
+					{% if pokemon.damage.weaknesses or pokemon.damage.strongWeaknesses %}
 						<div class="mt-20">
 							<div class="bold titleForceFaiblesse">{{ 'Weak to'|trans }} :</div>
 							<div class="flex gap-10 mb-5 align-center flex-wrap">

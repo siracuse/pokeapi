@@ -126,7 +126,7 @@ final class MainController extends AbstractController
             ]);
         }
 
-        return $this->render('main/_teambuildPokemon.html.twig', [
+        return $this->render('main/_teambuild_pokemon.html.twig', [
             'pokemon' => $pokemon,
         ]);
     }
@@ -155,7 +155,7 @@ final class MainController extends AbstractController
     #[Route('/{_locale}/table_des_types', name: 'table_type', defaults: ['_locale' => 'fr'])]
     public function tableType()
     {
-        return $this->render('main/tableType.html.twig');
+        return $this->render('main/table_type.html.twig');
     }
 
     #[Route('/{_locale}/cobbleverse', name: 'cobbleverse', defaults: ['_locale' => 'fr'])]

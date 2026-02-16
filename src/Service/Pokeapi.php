@@ -1890,7 +1890,8 @@ class Pokeapi
         private HttpClientInterface $client,
         private CacheInterface $cache,
         private int $pokemonCacheTtl,
-    ) {}
+    ) {
+    }
 
     /**
      * Récupère un Pokémon et ses informations enrichies.
@@ -1899,16 +1900,16 @@ class Pokeapi
      */
     public function fetchPokemon(string $name): array
     {
-        return $this->cache->get('pokemon_' . strtolower($name), function ($item) use ($name) {
+        return $this->cache->get('pokemon_'.strtolower($name), function ($item) use ($name) {
             try {
                 $item->expiresAfter($this->pokemonCacheTtl);
 
-                $pokemonResponse = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon/' . $name);
+                $pokemonResponse = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon/'.$name);
                 $pokemon = $pokemonResponse->toArray();
 
                 $stats = $this->extractStats($pokemon);
                 $statsTotal = array_sum(array_column($stats, 'base_stat'));
-                $types = array_map(fn($type) => $type['type']['name'], $pokemon['types']);
+                $types = array_map(fn ($type) => $type['type']['name'], $pokemon['types']);
 
                 $damages = $this->extractDamage($types);
                 $abilities = $this->extractAbilities($pokemon);
@@ -1949,16 +1950,16 @@ class Pokeapi
      */
     public function fetchPokemonList(int $limit, int $offset = 0): array
     {
-        return $this->cache->get('pokemon_list_' . $limit . '_' . $offset, function ($item) use ($limit, $offset) {
+        return $this->cache->get('pokemon_list_'.$limit.'_'.$offset, function ($item) use ($limit, $offset) {
             try {
                 $item->expiresAfter($this->pokemonCacheTtl);
 
-                $pokemonListResponse = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon?limit=' . $limit . '&offset=' . $offset);
+                $pokemonListResponse = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon?limit='.$limit.'&offset='.$offset);
                 $pokemonList = $pokemonListResponse->toArray();
 
                 $pokemonResponses = [];
                 foreach ($pokemonList['results'] as $pokemon) {
-                    $pokemonResponses[] = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon/' . $pokemon['name']);
+                    $pokemonResponses[] = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon/'.$pokemon['name']);
                 }
 
                 $contents = [];
@@ -1967,7 +1968,7 @@ class Pokeapi
                     $contents[] = [
                         'sprite' => $pokemon['sprites']['other']['official-artwork']['front_default'],
                         'name' => $pokemon['name'],
-                        'types' => array_map(fn($type) => $type['type']['name'], $pokemon['types']),
+                        'types' => array_map(fn ($type) => $type['type']['name'], $pokemon['types']),
                     ];
                 }
 
@@ -1983,7 +1984,7 @@ class Pokeapi
     private function extractStats(array $pokemon): array
     {
         $stats = array_map(
-            fn($stat) => [
+            fn ($stat) => [
                 'name' => $stat['stat']['name'],
                 'base_stat' => $stat['base_stat'],
             ],
@@ -1997,7 +1998,7 @@ class Pokeapi
     {
         $multipliers = [];
         foreach ($types as $type) {
-            $typeData = $this->client->request('GET', 'https://pokeapi.co/api/v2/type/' . $type)->toArray();
+            $typeData = $this->client->request('GET', 'https://pokeapi.co/api/v2/type/'.$type)->toArray();
             $typeRelation = $typeData['damage_relations'];
             foreach ($typeRelation['double_damage_from'] as $t) {
                 $multipliers[$t['name']] = ($multipliers[$t['name']] ?? 1) * 2;
