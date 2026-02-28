@@ -17,19 +17,20 @@ class PokeapiTest extends TestCase
         $mockClient = $this->createMock(HttpClientInterface::class);
         $mockCache = $this->createMock(CacheInterface::class);
 
-        $this->service = new Pokeapi(
-            $mockClient,
-            $mockCache,
-            3600
-        );
+        $this->service = new Pokeapi($mockClient,$mockCache,3600);
     }
 
 
-    public function testNameSearchToId()
+    public function testNameSearchToIdValid()
     {
         $result = $this->service->nameSearchToId('pikachu');
-
         $this->assertEquals(25, $result);
+    }
+
+    public function testNameSearchToIdFalse()
+    {
+        $result = $this->service->nameSearchToId('toto');
+        $this->assertEquals(null, $result);
     }
 
 }

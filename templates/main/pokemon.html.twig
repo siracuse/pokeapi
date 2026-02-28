@@ -5,7 +5,12 @@
 {% block body %}
 
 	<div class="pokemonSearch">
-		{{form(form)}}
+		<div>{{form(form)}}</div>
+		{% for message in app.flashes('error') %}
+			<div class="alert alert-danger mt-20">
+				{{ message }}
+			</div>
+		{% endfor %}
 	</div>
 
 	<div class="flex gap-20 flex-wrap container">

@@ -1900,9 +1900,9 @@ class Pokeapi
      */
     public function fetchPokemon(string $name): array
     {
-        return $this->cache->get('pokemon_'.strtolower($name), function ($item) use ($name) {
+        // return $this->cache->get('pokemon_'.strtolower($name), function ($item) use ($name) {
             try {
-                $item->expiresAfter($this->pokemonCacheTtl);
+                // $item->expiresAfter($this->pokemonCacheTtl);
 
                 $pokemonResponse = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon/'.$name);
                 $pokemon = $pokemonResponse->toArray();
@@ -1935,11 +1935,11 @@ class Pokeapi
 
                 return $content;
             } catch (\Throwable) {
-                $item->expiresAfter(0);
+                // $item->expiresAfter(0);
 
                 return ['error' => true, 'message' => 'Impossible de récupérer ce Pokémon pour le moment.'];
             }
-        });
+        // });
     }
 
     /**
@@ -1950,9 +1950,9 @@ class Pokeapi
      */
     public function fetchPokemonList(int $limit, int $offset = 0): array
     {
-        return $this->cache->get('pokemon_list_'.$limit.'_'.$offset, function ($item) use ($limit, $offset) {
+        // return $this->cache->get('pokemon_list_'.$limit.'_'.$offset, function ($item) use ($limit, $offset) {
             try {
-                $item->expiresAfter($this->pokemonCacheTtl);
+                // $item->expiresAfter($this->pokemonCacheTtl);
 
                 $pokemonListResponse = $this->client->request('GET', 'https://pokeapi.co/api/v2/pokemon?limit='.$limit.'&offset='.$offset);
                 $pokemonList = $pokemonListResponse->toArray();
@@ -1974,11 +1974,11 @@ class Pokeapi
 
                 return $contents;
             } catch (\Throwable) {
-                $item->expiresAfter(0);
+                // $item->expiresAfter(0);
 
                 return ['error' => true, 'message' => 'Impossible de récupérer les Pokémons pour le moment.'];
             }
-        });
+        // });
     }
 
     private function extractStats(array $pokemon): array

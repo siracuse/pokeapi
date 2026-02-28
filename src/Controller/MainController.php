@@ -32,12 +32,10 @@ final class MainController extends AbstractController
             $data = $form->getData();
             $nameSearch = $data['search'];
             $id = $pokeapi->nameSearchToId($nameSearch);
-            if (!$id) {
-                return $this->render('error.html.twig', [
-                    'message' => 'Pokémon introuvable',
-                ]);
+            if (!$id) {  
+                $this->addFlash('error', 'Pokémon introuvable');    
+                return $this->redirectToRoute('index');
             }
-
             return $this->redirectToRoute('pokemon', ['name' => $id]);
         }
 
@@ -84,10 +82,9 @@ final class MainController extends AbstractController
             $data = $form->getData();
             $nameSearch = $data['search'];
             $id = $pokeapi->nameSearchToId($nameSearch);
-            if (!$id) {
-                return $this->render('error.html.twig', [
-                    'message' => 'Pokémon introuvable',
-                ]);
+            if (!$id) {  
+                $this->addFlash('error', 'Pokémon introuvable');    
+                return $this->redirectToRoute('pokemon', ['name' => $name]);
             }
 
             return $this->redirectToRoute('pokemon', ['name' => $id]);
