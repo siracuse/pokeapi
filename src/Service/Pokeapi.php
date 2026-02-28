@@ -2078,7 +2078,8 @@ class Pokeapi
 
     public function nameSearchToId(string $nameSearch): ?int
     {
-        $name = strtolower($nameSearch);
+        $name = mb_strtolower($nameSearch, 'UTF-8');
+        $name = trim($name);
         $accents = ['à', 'á', 'â', 'ã', 'ä', 'å', 'æ', 'ç', 'è', 'é', 'ê', 'ë', 'ì', 'í', 'î', 'ï', 'ñ', 'ò', 'ó', 'ô', 'õ', 'ö', 'ù', 'ú', 'û', 'ü', 'ý', 'ÿ'];
         $sans = ['a', 'a', 'a', 'a', 'a', 'a', 'ae', 'c', 'e', 'e', 'e', 'e', 'i', 'i', 'i', 'i', 'n', 'o', 'o', 'o', 'o', 'o', 'u', 'u', 'u', 'u', 'y', 'y'];
         $name = str_replace($accents, $sans, $name);

@@ -24,13 +24,38 @@ class PokeapiTest extends TestCase
     public function testNameSearchToIdValid()
     {
         $result = $this->service->nameSearchToId('pikachu');
-        $this->assertEquals(25, $result);
+        $this->assertSame(25, $result);
+    }
+
+    public function testNameSearchToIdSensible()
+    {
+        $result = $this->service->nameSearchToId('PiKaCHU');
+        $this->assertSame(25, $result);
     }
 
     public function testNameSearchToIdFalse()
     {
         $result = $this->service->nameSearchToId('toto');
-        $this->assertEquals(null, $result);
+        $this->assertNull($result);
     }
+
+    public function testNameSearchToIdCapitalAccents()
+    {
+        $result = $this->service->nameSearchToId('Évoli');
+        $this->assertSame(133, $result);
+    }
+
+    public function testNameSearchToIdWithVoid()
+    {
+        $result = $this->service->nameSearchToId('');
+        $this->assertNull($result);
+    }
+
+    public function testNameSearchToIdWithSpace()
+    {
+        $result = $this->service->nameSearchToId('  pikachu  ');
+        $this->assertSame(25, $result);
+    }
+
 
 }
