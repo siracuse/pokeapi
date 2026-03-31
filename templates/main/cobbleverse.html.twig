@@ -4,8 +4,76 @@
 
 {% block body %}
 
+	</div>
+
+		<div class="container mb-40">
+		<h2 class="mb-30">{{ "Gyms"|trans }} - Johto</h2>
+
+		<div class="flex gap-28 flex-wrap cobbleverseGym">
+			
+			<div class="pokemonWidget flex flex-column align-center">
+				<h3 class="text-center mb-20">1 Valerio</h3>
+				<div><img class="img-100 mb-20" src="{{ asset('images/arene/1.png') }}" alt=""></div>
+				<div class="mg-0-auto-20-auto text-center type flying">{{ 'flying'|trans({}, 'types') }}</div>
+				<p><span class="bold">xz</span> = -1150; 4050</p>
+			</div>
+		
+			<div class="pokemonWidget flex flex-column align-center">
+				<h3 class="text-center mb-20">2 Raffaello</h3>
+				<div><img class="img-100 mb-20" src="{{ asset('images/arene/2.png') }}" alt=""></div>
+				<div class="mg-0-auto-20-auto text-center type bug">{{ 'bug'|trans({}, 'types') }}</div>
+				<p><span class="bold">xz</span> = -5650; 4000</p>
+			</div>
+
+			<div class="pokemonWidget flex flex-column align-center">
+				<h3 class="text-center mb-20">3 Lt. Chiara</h3>
+				<div><img class="img-100 mb-20" src="{{ asset('images/arene/3.png') }}" alt=""></div>
+				<div class="mg-0-auto-20-auto text-center type normal">{{ 'normal'|trans({}, 'types') }}</div>
+				<p><span class="bold">xz</span> = 7850; -7000</p>
+			</div>
+
+			<div class="pokemonWidget flex flex-column align-center">
+				<h3 class="text-center mb-20">4 Angelo</h3>
+				<div><img class="img-100 mb-20" src="{{ asset('images/arene/4.png') }}" alt=""></div>
+				<div class="mg-0-auto-20-auto text-center type ghost">{{ 'ghost'|trans({}, 'types') }}</div>
+				<p><span class="bold">xz</span> = 5150; -3550</p>
+			</div>
+
+			<div class="pokemonWidget flex flex-column align-center">
+				<h3 class="text-center mb-20">5 Furio</h3>
+				<div><img class="img-100 mb-20" src="{{ asset('images/arene/5.png') }}" alt=""></div>
+				<div class="mg-0-auto-20-auto text-center type fighting">{{ 'fighting'|trans({}, 'types') }}</div>
+				<p><span class="bold">xz</span> = -4400; -700</p>
+			</div>
+
+			<div class="pokemonWidget flex flex-column align-center">
+				<h3 class="text-center mb-20">6 Jasmine</h3>
+				<div><img class="img-100 mb-20" src="{{ asset('images/arene/6.png') }}" alt=""></div>
+				<div class="mg-0-auto-20-auto text-center type steel">{{ 'steel'|trans({}, 'types') }}</div>
+				<p><span class="bold">xz</span> = -1750; -3850</p>
+			</div>
+
+			<div class="pokemonWidget flex flex-column align-center">
+				<h3 class="text-center mb-20">7 Alfredo</h3>
+				<div><img class="img-100 mb-20" src="{{ asset('images/arene/7.png') }}" alt=""></div>
+				<div class="mg-0-auto-20-auto text-center type ice">{{ 'ice'|trans({}, 'types') }}</div>
+				<p><span class="bold">xz</span> = -4950;6700</p>
+			</div>
+
+			<div class="pokemonWidget flex flex-column align-center">
+				<h3 class="text-center mb-20">8 Sandra</h3>
+				<div><img class="img-100 mb-20" src="{{ asset('images/arene/8.png') }}" alt=""></div>
+				<div class="mg-0-auto-20-auto text-center type dragon">{{ 'dragon'|trans({}, 'types') }}</div>
+				<p><span class="bold">xz</span> = -325;60 Nether</p>
+			</div>
+
+		</div>
+		
+	</div>
+
+
 	<div class="container mb-40">
-		<h2 class="mb-30">{{ "Gyms"|trans }}</h2>
+		<h2 class="mb-30">{{ "Gyms"|trans }} - Kanto</h2>
 
 		<div class="flex gap-28 flex-wrap cobbleverseGym">
 			
@@ -67,6 +135,6 @@
 
 		</div>
 		
-	</div>
+
 
 {% endblock %}
